@@ -27,7 +27,7 @@ class CreateFacilitiesTable extends Migration
             $table->boolean('for_child')->default(false);
             $table->boolean('is_indoor');
             $table->boolean('enable')->default(false);
-            $table->timestamps()->useCurrent();
+            $table->timestamps();
         });
     }
 

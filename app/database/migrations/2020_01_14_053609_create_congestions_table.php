@@ -16,7 +16,7 @@ class CreateCongestionsTable extends Migration
         Schema::create('congestions', function (Blueprint $table) {
             $table->integer('facility_id')->index();
             $table->unsignedTinyInteger('congestion');
-            $table->timestamps()->useCurrent();
+            $table->timestamps();
         });
     }
 
