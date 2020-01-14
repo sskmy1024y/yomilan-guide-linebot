@@ -13,6 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => ['api']], function () {
+    Route::group(['namespace' => 'Api\Internal', 'prefix' => 'internal'], function () {
+        Route::resource('facility', 'FacilitiesController', ['except' => ['create', 'edit']]);
+    });
 });
+
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
