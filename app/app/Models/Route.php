@@ -8,7 +8,7 @@ class Route extends Model
 {
     public function visit()
     {
-        return $this->belongsTo('Models\App\Visit');
+        return $this->belongsTo('App\Models\Visit');
     }
 
     public function group_id()
@@ -18,6 +18,6 @@ class Route extends Model
 
     public function facilities()
     {
-        return $this->belongsToMany('Models\App\Facility');
+        return $this->belongsToMany('App\Models\Facility');
     }
 }

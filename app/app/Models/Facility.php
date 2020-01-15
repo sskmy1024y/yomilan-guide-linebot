@@ -10,7 +10,7 @@ class Facility extends Model
 {
     public function congestion()
     {
-        return $this->hasMany('Models/App/Congestion');
+        return $this->hasMany('App\Models\Congestion');
     }
 
     /**

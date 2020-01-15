@@ -11,7 +11,7 @@ class Visit extends Model
      */
     public function routes()
     {
-        return $this->hasMany('Models\App\Route', 'visit_id');
+        return $this->hasMany('App\Models\Route', 'visit_id');
     }
 
     /**
