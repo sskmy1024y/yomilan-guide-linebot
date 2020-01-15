@@ -20,4 +20,9 @@ class Facility extends Model
     {
         return $this->congestion->last();
     }
+
+    public function area()
+    {
+        return $this->hasOne('App\Models\Area');
+    }
 }

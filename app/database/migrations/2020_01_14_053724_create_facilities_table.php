@@ -17,16 +17,21 @@ class CreateFacilitiesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->text('description');
+            $table->integer('price')->default(0);
             $table->string('image_path')->nullable();
+            $table->integer('area_id');
             $table->enum('type', ['ATTRACTION', 'RESTAURANT', 'SHOP', 'OTHER']);
-            $table->enum('area', ['GOODJOBA', 'SUN_SQUARE', 'RANRAN_AREA', 'FLAG_STREAT', 'FAMILY_AREA', 'BANDET_AREA', 'OTHER']);
             $table->float('latitude');
             $table->float('longtitude');
-            $table->integer('price')->nullable();
             $table->boolean('use_pass')->default(false);
             $table->boolean('for_child')->default(false);
             $table->boolean('is_indoor');
-            $table->boolean('enable')->default(false);
+            $table->string('capacity')->nullable();
+            $table->string('age_limit')->nullable();
+            $table->string('physical_limit')->nullable();
+            $table->integer('require_time')->nullable();
+            $table->boolean('enable')->default(true);
+            $table->string('url');
             $table->timestamps();
         });
     }
