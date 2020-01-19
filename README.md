@@ -1,6 +1,6 @@
-# Dockerfile-Template-for-Laravel
+# yomiran-guide-linebot
 
-Docker上にLaravel環境を構築するテンプレート
+よみうりランド案内用LINE Bot
 
 ## Usage
 
