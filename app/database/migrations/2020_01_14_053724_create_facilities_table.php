@@ -22,7 +22,7 @@ class CreateFacilitiesTable extends Migration
             $table->integer('area_id');
             $table->enum('type', ['ATTRACTION', 'RESTAURANT', 'SHOP', 'OTHER']);
             $table->float('latitude');
-            $table->float('longtitude');
+            $table->float('longitude');
             $table->boolean('use_pass')->default(false);
             $table->boolean('for_child')->default(false);
             $table->boolean('is_indoor');

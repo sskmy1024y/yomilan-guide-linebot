@@ -12,7 +12,7 @@ class AreaSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('area')->insert([
+        DB::table('areas')->insert([
             [
                 'id' => 1,
                 'name' => 'グッジョバエリア',
