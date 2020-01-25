@@ -16,8 +16,8 @@ class RouteController extends Controller
     public function index()
     {
         $auto = new CourseGenerate([]);
-        $auto->generate();
-        return response()->json(['error' => false, 'message' => '', 'data' => $auto]);
+        $locations = $auto->generate(35.6804067, 139.7550152, 100);
+        return response()->json(['error' => false, 'message' => '', 'data' => $locations]);
     }
 
     /**
