@@ -15,8 +15,14 @@ class RouteController extends Controller
      */
     public function index()
     {
-        $auto = new CourseGenerate([]);
-        $locations = $auto->generate(35.6804067, 139.7550152, 100);
+        // 新規作成時は入り口を固定
+        $entrance = [
+            'latitude' => 35.6242,
+            'longitude' => 139.5174,
+        ];
+
+        $auto = new CourseGenerate($entrance['latitude'], $entrance['longitude']);
+        $locations = $auto->main();
         return response()->json(['error' => false, 'message' => '', 'data' => $locations]);
     }
 
