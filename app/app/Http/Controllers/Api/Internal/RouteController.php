@@ -22,8 +22,7 @@ class RouteController extends Controller
         ];
 
         $auto = new CourseGenerate($entrance['latitude'], $entrance['longitude']);
-        $locations = $auto->main();
-        return response()->json(['error' => false, 'message' => '', 'data' => $locations]);
+        return response()->json(['error' => false, 'message' => '', 'data' => $auto->main()]);
     }
 
     /**

@@ -4,11 +4,13 @@ namespace App\Services\Course;
 
 use App\Models\Area;
 use Illuminate\Support\Facades\DB;
+use Util_Assert;
 
 class CourseGenerate
 {
-  private $latitude = 0.0;
-  private $longitude = 0.0;
+  private $latitude = 0.0;    // 現在位置（緯度）
+  private $longitude = 0.0;   // 現在位置（経度）
+  private $facilities = [];   // 候補リスト
 
   /**
    * コンストラクタの作成
@@ -27,37 +29,55 @@ class CourseGenerate
    */
   public function main()
   {
-    // TODO: 回れる時間
+    // TODO: 回れる時間を自動計算
     $usable_time = 480; // 8時間 * 60分
 
     $reaming = 0;
-    $facilities = [];
     do {
-      $_facilities = self::_getFacilitiesEveryArea();
-      $_facilities = array_merge($facilities, $_facilities);
-      $facilities += self::_sortFacilitiesByDistance($_facilities);
-      $orbit_time = self::_getOrbitTime($facilities);
-      $reaming += $orbit_time;
+      $ids = array_column($this->facilities, "id");
+      // エリアごとの施設を取得して、候補一覧とマージ 
+      $_facilities = array_merge(self::_getFacilitiesEveryArea($ids), $this->facilities);
+      // 施設同士の近さで並び替える
+      // TODO: global関数に入れるのは、計算時間がusable_timeを下回った場合のみにする
+      $_facilities = self::_sortByDistanceFromFacilities($_facilities);
+
+      // 施設を回るのにかかる時間を計算
+      $orbit_time = self::_getOrbitTime($_facilities);
+
+      // 直前の時間と同じならこれ以上施設がない = 検索終了
+      if ($orbit_time == $reaming || $orbit_time > $usable_time) {
+        break;
+      }
+
+      // 値を更新
+      $this->facilities = $_facilities;
+      $reaming = $orbit_time;
     } while ($reaming < $usable_time);
 
-    return $facilities;
+
+    return [
+      'use_time' => $reaming,
+      'facilities' => $this->facilities,
+    ];
   }
 
   /**
    * エリア毎に施設をピックアップする
    * 
+   * @param array $exclude_ids 除外する施設のID
    * @return array
    */
-  private function _getFacilitiesEveryArea(): array
+  private function _getFacilitiesEveryArea(array $exclude_ids = []): array
   {
-    // TODO: 過去にピックアップした施設は除外する
     $areas = Area::all();
 
     $facilities = [];
     foreach ($areas as $area) {
-      $area_facilities = $area->facilies();
+      $area_facilities = $area->facilies()->whereNotIn("id", $exclude_ids);  // 同じアトラクションを排除
 
-      // TODO: 取得条件を変えなければならない
+      // TODO: 取得条件をユーザによって変える（子連れ、年代等）
+      // $area_facilities = $area_facilities->where("for_child", "=", 0);
+
       $facility = $area_facilities->first();
 
       // nullや飲食施設を除外する
@@ -69,17 +89,40 @@ class CourseGenerate
   }
 
   /**
-   * 施設の配列情報を、現在地からの近さで並べ替える
+   * 施設の近さに基づいてリストを並び替えて返す
+   * 
+   * @param array $_facilities 
+   * @return array
+   */
+  private function _sortByDistanceFromFacilities(array $_facilities)
+  {
+    $next = self::_sortByDistanceFromCurrentLocation($_facilities);
+    $facilities = [];
+    do {
+      $facilities = array_merge($facilities, $next);
+      if (($key = array_search($next, $_facilities)) !== false) {
+        unset($_facilities[$key]);
+        $next = $next->getNearFacility($_facilities);
+      } else {
+        break;
+      }
+    } while (count($_facilities) > 0);
+
+    return $facilities;
+  }
+
+  /**
+   * 施設の配列情報を、現在地からの近さで並べ替えて返す
    * 
    * @param array $facilities 施設の配列
    * @return array
    */
-  private function _sortFacilitiesByDistance(array $facilities)
+  private function _sortByDistanceFromCurrentLocation(array $facilities): array
   {
-    foreach ($facilities as $key => $value) {
-      $sort[$key] = $value->distance($this->latitude, $this->longitude);
+    Util_Assert::notEmpty($facilities);
+    foreach ($facilities as $key => $facility) {
+      $sort[$key] = $facility->distance($this->latitude, $this->longitude);
     }
-
     array_multisort($sort, SORT_ASC, $facilities);
     return $facilities;
   }
@@ -90,7 +133,7 @@ class CourseGenerate
    * @param array $facilities
    * @return int minute
    */
-  private function _getOrbitTime(array $facilities)
+  private function _getOrbitTime(array $facilities): int
   {
     $sum = 0;
     foreach ($facilities as $key => $facility) {
@@ -112,6 +155,11 @@ class CourseGenerate
         ]);
       }
       $sum += $time;
+      if ($time > 1000) {
+        var_dump($facility);
+      }
+
+      $sum += $facility->require_time;
 
       // TODO: 待ち時間を計算して付与。今は固定
       $sum += 15;
@@ -119,7 +167,7 @@ class CourseGenerate
       $sum += 5;  // 余白時間
     }
 
-    $sum += $facility->require_time;
+
     return (int) $sum;
   }
 
@@ -156,7 +204,7 @@ class CourseGenerate
    * @param int   $limit      (default: 5)
    * @param array|false       Facilities
    */
-  private function _getNearFacilities($latitude, $longitude, $distance, $limit = 5)
+  private function _getNearFacilitiesFromCurrentLocation($latitude, $longitude, $distance, $limit = 5)
   {
     $sql = "SELECT
             id, name, latitude, longitude,

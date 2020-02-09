@@ -60,4 +60,23 @@ class Facility extends Model
                 * sin(deg2rad($this->latitude))
         );
     }
+
+    /**
+     * 指定した施設リストから一番近いものを返す
+     * 
+     * @param array $facilities 
+     * @return float 距離(km)
+     */
+    public function getNearFacility(array $facilities)
+    {
+        if (($key = array_search($this, $facilities)) !== false) {
+            unset($facilities[$key]);
+            foreach ($facilities as $key => $value) {
+                $sort[$key] = $value->distance($facilities->latitude, $facilities->longitude);
+            }
+            array_multisort($sort, SORT_ASC, $facilities);
+            return $facilities[0];
+        }
+        return null;
+    }
 }
