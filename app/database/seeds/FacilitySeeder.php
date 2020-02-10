@@ -467,7 +467,7 @@ class FacilitySeeder extends Seeder
                 'area_id' => 4,
                 'type' => FacilityType::ATTRACTION,
                 'latitude' => 35.6350,
-                'longitude' => 149.5183,
+                'longitude' => 139.5183,
                 'use_pass' => true,
                 'for_child' => true,
                 'is_indoor' => false,

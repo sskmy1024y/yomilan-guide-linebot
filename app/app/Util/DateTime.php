@@ -204,9 +204,9 @@ final class Util_DateTime
   }
 
   /**
-   * 現在時刻の DateTime のインスタンスを作って返す
+   * 現在時刻の ExDateTimeImmutable のインスタンスを作って返す
    *
-   * @return DateTime
+   * @return ExDateTimeImmutable
    */
   public static function createNow()
   {
@@ -214,10 +214,10 @@ final class Util_DateTime
   }
 
   /**
-   * Y-m-d H:i:s形式の文字列を DateTime のインスタンスに変換する
+   * Y-m-d H:i:s形式の文字列を ExDateTimeImmutable のインスタンスに変換する
    *
    * @param string $string Y-m-d H:i:s形式
-   * @return DateTime
+   * @return ExDateTimeImmutable
    */
   public static function createFromYmdHis($string)
   {
@@ -227,10 +227,10 @@ final class Util_DateTime
   }
 
   /**
-   * Y-m-d形式の文字列を DateTime のインスタンスに変換する。
+   * Y-m-d形式の文字列を ExDateTimeImmutable のインスタンスに変換する。
    *
    * @param string $string Y-m-d形式
-   * @return DateTime
+   * @return ExDateTimeImmutable
    */
   public static function createFromYmd($string)
   {
@@ -242,7 +242,19 @@ final class Util_DateTime
   }
 
   /**
-   * DateTime のインスタンスを作って返す
+   * H:i:s形式の文字列を ExDateTimeImmutable のインスタンスに変換する。
+   *
+   * @param string $string H:i:s形式
+   * @return ExDateTimeImmutable
+   */
+  public static function createFromHis($string)
+  {
+    Util_Assert::string($string);
+    return Util_DateTime::createFromFormat('H:i:s', $string);
+  }
+
+  /**
+   * ExDateTimeImmutable のインスタンスを作って返す
    *
    * 基本的には Util_DateTime::createFromYmdHis() か Util_DateTime::createFromYmd() を使うこと。
    * それ以外の特殊な形式の日時文字列を変換する場合なら使っても良い。
@@ -251,9 +263,11 @@ final class Util_DateTime
    * 指定したフィールド以外は現在日時で設定される。時間差の計算で罠になりやすい。
    * 例: Util_DateTime::createFromFormat('Y-m-d', $string) のように使うと、時刻部分は現在時刻になる。
    *
+   * ExDateTimeImmutable のインスタンスを作るときは、必ずこのメソッドを使うか、使えない場合は同じくらい厳密にエラーチェックを行う別のメソッドを用意する。
+   * 
    * @param string $format フォーマット('U'を使うと戻り値はUTCになるので注意)
    * @param string $string 時刻文字列
-   * @return DateTime JSTとして解釈した日時($formatによって変わるので注意)
+   * @return ExDateTimeImmutable JSTとして解釈した日時($formatによって変わるので注意)
    * @see http://php.net/manual/en/datetime.createfromformat.php
    */
   public static function createFromFormat($format, $string)
@@ -263,7 +277,7 @@ final class Util_DateTime
 
     try {
       // timezoneを渡さないとまずいことがあると聞いたが、確認できていない。念のため渡しておく。
-      $datetime = DateTime::createFromFormat($format, $string, new DateTimeZone('Asia/Tokyo'));
+      $datetime = ExDateTimeImmutable::createFromFormat($format, $string, new DateTimeZone('Asia/Tokyo'));
     } catch (\Throwable $e) {
       // DateTime::createFromFormat() は失敗すると InvalidArgumentException を投げる。
       // メッセージがバラバラでものによっては日時情報のことか分からないことがあるし、
@@ -271,7 +285,7 @@ final class Util_DateTime
       throw new InvalidArgumentException('日時情報の作成に失敗: ' . $e->getMessage());
     }
 
-    if (!($datetime instanceof DateTime)) {
+    if (!($datetime instanceof ExDateTimeImmutable)) {
       // DateTime::createFromFormat() は失敗すると InvalidArgumentException を投げる。
       // なのでこのif文に引っかかることは有り得ないはずだが、一応チェックしておく。
       throw new Exception_AssertionFailed('日時情報の作成に失敗: ' . var_export($datetime, true));
@@ -283,13 +297,14 @@ final class Util_DateTime
   public static function createUTC($input = 'now', DateTimeZone $timezone = null)
   {
     Util_Assert::string($input);
-    $datetime = new DateTime($input, $timezone);
+    $datetime = new ExDateTimeImmutable($input, $timezone);
     self::_checkLastErrors();
     return $datetime->setTimezone(new DateTimeZone('UTC'));
   }
 
   /**
-   * 日時文字列を受け取り、それに対応する日本語の曜日を返す
+   * 日時文字列を受け取り、それに対応する日本語の曜日を返す。
+   * DateTime::diffのラッパー関数
    *
    * @param string $date 日時文字列
    * @return string 曜日文字列（'日'〜'土'）
@@ -301,19 +316,39 @@ final class Util_DateTime
   }
 
   /**
-   * DateTime クラスのメソッド呼び出しでエラーが発生したかチェックする
+   * ふたつの DateTime オブジェクトの差をminで返す。
+   * date_diffのラッパー関数。頻出なので
+   * 
+   * @see https://www.php.net/manual/ja/class.dateinterval.php
+   * 
+   * @param DateTime $datetime1
+   * @param DateTime $datetime2
+   * @param bool|false $absolute 間隔が正の数になるようにするか否か
+   * @return int
+   */
+  public static function min_diff($datetime1, $datetime2, $absolute = true)
+  {
+    $diff = date_diff($datetime1, $datetime2, $absolute);
+    if ($diff instanceof DateInterval) {
+      return $diff->i;
+    }
+    return false;
+  }
+
+  /**
+   * ExDateTimeImmutable クラスのメソッド呼び出しでエラーが発生したかチェックする
    *
    * 日付/時刻文字列のパースを行うメソッドの直後で必ずこのメソッドを呼び出すこと。
    * 該当するメソッドは以下の通り:
    *
-   * - new DateTime()
-   * - DateTime::createFromFormat()
+   * - new ExDateTimeImmutable()
+   * - ExDateTimeImmutable::createFromFormat()
    *
    * @see http://jp2.php.net/manual/ja/datetime.getlasterrors.php
    */
   private static function _checkLastErrors(): void
   {
-    $errors = DateTime::getLastErrors();
+    $errors = ExDateTimeImmutable::getLastErrors();
     if ($errors['warning_count'] != 0 || $errors['error_count'] != 0) {
       throw new Exception_AssertionFailed('日時情報の作成に失敗: ' . var_export($errors, true));
     }

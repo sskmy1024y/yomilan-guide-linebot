@@ -5,11 +5,14 @@ namespace App\Services\Course;
 use App\Models\Area;
 use Illuminate\Support\Facades\DB;
 use Util_Assert;
+use Util_DateTime;
 
 class CourseGenerate
 {
-  private $latitude = 0.0;    // 現在位置（緯度）
-  private $longitude = 0.0;   // 現在位置（経度）
+  private $start_time;
+  private $end_time;
+  private $latitude;    // 現在位置（緯度）
+  private $longitude;   // 現在位置（経度）
   private $facilities = [];   // 候補リスト
 
   /**
@@ -18,10 +21,42 @@ class CourseGenerate
    * @param float $latitude
    * @param float $longitude
    */
-  public function __construct($latitude, $longitude)
+  public function __construct($latitude = 0.0, $longitude = 0.0)
   {
     $this->latitude = $latitude;
     $this->longitude = $longitude;
+    $this->start_time = Util_DateTime::createNow();
+    $this->end_time = Util_DateTime::createFromHis('18:00:00');
+  }
+
+  /**
+   * 現在地を設定
+   * 
+   * @param float $latitude
+   * @param float $longitude
+   */
+  public function setCurrentLocation($latitude, $longitude)
+  {
+    $this->latitude = $latitude;
+    $this->longitude = $longitude;
+  }
+
+  /**
+   * 開始時間を設定
+   * @param datetime $start_time
+   */
+  public function setStartTime($start_time)
+  {
+    $this->start_time = $start_time;
+  }
+
+  /**
+   * 終了時間を設定
+   * @param datetime $start_time
+   */
+  public function setEndTime($end_time)
+  {
+    $this->end_time = $end_time;
   }
 
   /**
@@ -29,8 +64,16 @@ class CourseGenerate
    */
   public function main()
   {
-    // TODO: 回れる時間を自動計算
-    $usable_time = 480; // 8時間 * 60分
+    $usable_time = $this->start_time->diffInMinutes($this->end_time);
+
+    if ($this->start_time->hour < 13) {
+      $lanch_time = 60;
+    } else {
+      $lanch_time = 0;
+    }
+
+    // 遊べる時間を自動計算
+    $active_time = $usable_time - $lanch_time; // 8時間 * 60分 - 60分 お昼時間を除く
 
     $reaming = 0;
     do {
@@ -38,21 +81,20 @@ class CourseGenerate
       // エリアごとの施設を取得して、候補一覧とマージ 
       $_facilities = array_merge(self::_getFacilitiesEveryArea($ids), $this->facilities);
       // 施設同士の近さで並び替える
-      // TODO: global関数に入れるのは、計算時間がusable_timeを下回った場合のみにする
       $_facilities = self::_sortByDistanceFromFacilities($_facilities);
 
       // 施設を回るのにかかる時間を計算
       $orbit_time = self::_getOrbitTime($_facilities);
 
       // 直前の時間と同じならこれ以上施設がない = 検索終了
-      if ($orbit_time == $reaming || $orbit_time > $usable_time) {
+      if ($orbit_time == $reaming || $orbit_time > $active_time) {
         break;
       }
 
       // 値を更新
       $this->facilities = $_facilities;
       $reaming = $orbit_time;
-    } while ($reaming < $usable_time);
+    } while ($reaming < $active_time);
 
 
     return [
@@ -96,6 +138,8 @@ class CourseGenerate
    */
   private function _sortByDistanceFromFacilities(array $_facilities)
   {
+    Util_Assert::notEmpty($_facilities);
+
     $next = self::_sortByDistanceFromCurrentLocation($_facilities);
     $facilities = [];
     do {
@@ -135,6 +179,8 @@ class CourseGenerate
    */
   private function _getOrbitTime(array $facilities): int
   {
+    Util_Assert::notEmpty($facilities);
+
     $sum = 0;
     foreach ($facilities as $key => $facility) {
       if ($key === 0) {
@@ -155,9 +201,6 @@ class CourseGenerate
         ]);
       }
       $sum += $time;
-      if ($time > 1000) {
-        var_dump($facility);
-      }
 
       $sum += $facility->require_time;
 
@@ -196,42 +239,13 @@ class CourseGenerate
   }
 
   /**
-   * 指定したロケーションの近辺のアトラクションを取得する
+   * お昼ご飯の場所を、時間的に適切な順に挿入する
    * 
-   * @param float $latitude   緯度
-   * @param float $longitude  経度
-   * @param int   $distance   検索範囲
-   * @param int   $limit      (default: 5)
-   * @param array|false       Facilities
+   * @param array $lanch お昼ご飯の場所
+   * @return array 
    */
-  private function _getNearFacilitiesFromCurrentLocation($latitude, $longitude, $distance, $limit = 5)
+  private function _mergeLanchFacility($lanch)
   {
-    $sql = "SELECT
-            id, name, latitude, longitude,
-            (
-                6371 * acos(
-                    cos(radians(:latitude1))
-                    * cos(radians(latitude))
-                    * cos(radians(longitude) - radians(:longitude))
-                    + sin(radians(:latitude2))
-                    * sin(radians(latitude))
-                )
-            ) AS distance
-        FROM
-            facilities
-        HAVING
-            distance <= :distance
-        ORDER BY
-            distance
-        LIMIT :limit
-        ;";
-
-    return DB::select($sql, [
-      'latitude1' => $latitude,
-      'latitude2' => $latitude,
-      'longitude' => $longitude,
-      'distance' => $distance,
-      'limit' => $limit,
-    ]);
+    return [];
   }
 }
