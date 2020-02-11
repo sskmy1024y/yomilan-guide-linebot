@@ -3,7 +3,9 @@
 namespace App\Services\Course;
 
 use App\Models\Area;
-use Illuminate\Support\Facades\DB;
+use App\Exceptions\Exception_AssertionFailed;
+use App\Models\Facility;
+use App\Models\FacilityType;
 use Util_Assert;
 use Util_DateTime;
 
@@ -25,7 +27,7 @@ class CourseGenerate
   {
     $this->latitude = $latitude;
     $this->longitude = $longitude;
-    $this->start_time = Util_DateTime::createNow();
+    $this->start_time = Util_DateTime::createFromHis('10:00:00');
     $this->end_time = Util_DateTime::createFromHis('18:00:00');
   }
 
@@ -96,6 +98,8 @@ class CourseGenerate
       $reaming = $orbit_time;
     } while ($reaming < $active_time);
 
+    $lanch = Facility::where("type", "=", FacilityType::RESTAURANT)->first();
+    $this->facilities = self::_mergeLanchFacility($lanch);
 
     return [
       'use_time' => $reaming,
@@ -146,7 +150,7 @@ class CourseGenerate
       $facilities = array_merge($facilities, $next);
       if (($key = array_search($next, $_facilities)) !== false) {
         unset($_facilities[$key]);
-        $next = $next->getNearFacility($_facilities);
+        $next = $next->getMostNearFacility($_facilities);
       } else {
         break;
       }
@@ -175,15 +179,17 @@ class CourseGenerate
    * 周回にかかる時間を算出
    * 
    * @param array $facilities
+   * @param bool $start_current 移動開始位置を現在地にする
    * @return int minute
    */
-  private function _getOrbitTime(array $facilities): int
+  private function _getOrbitTime(array $facilities, $start_current = true): int
   {
     Util_Assert::notEmpty($facilities);
 
     $sum = 0;
     foreach ($facilities as $key => $facility) {
       if ($key === 0) {
+        if ($start_current === false) continue;
         [, $time] = self::_intervalTwiceLocations([
           'latitude' => $this->latitude,
           'longitude' => $this->longitude,
@@ -239,13 +245,45 @@ class CourseGenerate
   }
 
   /**
-   * お昼ご飯の場所を、時間的に適切な順に挿入する
+   * お昼ご飯の場所を、時間的に適切な順に挿入して返す
    * 
-   * @param array $lanch お昼ご飯の場所
+   * @param Facility $lanch お昼ご飯の場所
    * @return array 
    */
   private function _mergeLanchFacility($lanch)
   {
-    return [];
+    $lanch_start = Util_DateTime::createFromHis("11:30:00");
+    $lanch_end = Util_DateTime::createFromHis("13:30:00");
+    $_facilities = [];
+    /**
+     * 1. 飲食店の近くのアトラクションを探す
+     * 2. アトラクションまでの時間が11時半以降13時半以前ならば、挿入
+     * 3. 11時半以前なら、次のアトラクションで2.を行う
+     * 3. 13時半以降なら、前のアトラクションで2.を行う
+     */
+    $next = $lanch->getMostNearFacility($this->facilities);
+    if ($next === null) {
+      throw new \Exception_AssertionFailed("レストランの近くにアトラクションが見つからない");
+    }
+
+    while (count($_facilities) <= count($this->facilities)) {
+      $start_time = clone $this->start_time;
+      $key = array_search($next->id, array_column($this->facilities, 'id'));
+      $splited = array_chunk($this->facilities, $key);
+      $comp_time = $start_time->addMinutes(self::_getOrbitTime($splited[0]));
+
+      if ($comp_time->gte($lanch_start) && $comp_time->lte($lanch_end)) {
+        $_facilities = array_merge($splited[0], [$lanch], $splited[1]);
+        break;
+      } else if ($comp_time->lte($lanch_end)) {   // 11:30以前
+        $next = $this->facilities[$key + 1];
+      } else if ($comp_time->gte($lanch_start)) { // 13:30以降
+        $next = $this->facilities[$key - 1];
+      } else {
+        throw new \Exception_AssertionFailed('お昼時間に挿入できませんでした');
+      }
+    };
+
+    return $_facilities;
   }
 }

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Util_Assert;
 
 class Facility extends Model
 {
@@ -62,21 +63,28 @@ class Facility extends Model
     }
 
     /**
-     * 指定した施設リストから一番近いものを返す
+     * 指定したリストから、この施設に一番近い施設を返す
      * 
      * @param array $facilities 
-     * @return float 距離(km)
+     * @return array|null
      */
-    public function getNearFacility(array $facilities)
+    public function getMostNearFacility(array $facilities)
     {
-        if (($key = array_search($this, $facilities)) !== false) {
-            unset($facilities[$key]);
-            foreach ($facilities as $key => $value) {
-                $sort[$key] = $value->distance($facilities->latitude, $facilities->longitude);
+        Util_Assert::notEmpty($facilities);
+
+        $near = [
+            'distance' => 0.0,
+            'facility' => null,
+        ];
+        foreach ($facilities as $facility) {
+            $distance = $this->distance($facility->latitude, $facility->longitude);
+            if ($distance > $near['distance']) {
+                $near = [
+                    'distance' => $distance,
+                    'facility' => $facility,
+                ];
             }
-            array_multisort($sort, SORT_ASC, $facilities);
-            return $facilities[0];
         }
-        return null;
+        return $near['facility'];
     }
 }

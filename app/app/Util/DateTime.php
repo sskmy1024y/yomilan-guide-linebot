@@ -316,26 +316,6 @@ final class Util_DateTime
   }
 
   /**
-   * ふたつの DateTime オブジェクトの差をminで返す。
-   * date_diffのラッパー関数。頻出なので
-   * 
-   * @see https://www.php.net/manual/ja/class.dateinterval.php
-   * 
-   * @param DateTime $datetime1
-   * @param DateTime $datetime2
-   * @param bool|false $absolute 間隔が正の数になるようにするか否か
-   * @return int
-   */
-  public static function min_diff($datetime1, $datetime2, $absolute = true)
-  {
-    $diff = date_diff($datetime1, $datetime2, $absolute);
-    if ($diff instanceof DateInterval) {
-      return $diff->i;
-    }
-    return false;
-  }
-
-  /**
    * ExDateTimeImmutable クラスのメソッド呼び出しでエラーが発生したかチェックする
    *
    * 日付/時刻文字列のパースを行うメソッドの直後で必ずこのメソッドを呼び出すこと。

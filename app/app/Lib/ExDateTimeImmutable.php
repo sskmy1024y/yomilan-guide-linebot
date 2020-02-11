@@ -173,6 +173,35 @@ final class ExDateTimeImmutable extends Carbon\Carbon
     return parent::subMonth($value);
   }
 
+  /**
+   * @deprecated subDaysを使うこと(表記ブレしてgrepに困る)
+   * @param int $value
+   * @return ExDateTimeImmutable
+   */
+  public function subDay($value = 1)
+  {
+    return parent::subDay($value);
+  }
+
+  /**
+   * @deprecated subMinutesを使うこと(表記ブレしてgrepに困る)
+   * @param int $value
+   * @return ExDateTimeImmutable
+   */
+  public function subMinute($value = 1)
+  {
+    return parent::subMinute($value);
+  }
+
+  /**
+   * @deprecated subSecondsを使うこと(表記ブレしてgrepに困る)
+   * @param int $value
+   * @return ExDateTimeImmutable
+   */
+  public function subSecond($value = 1)
+  {
+    return parent::subSecond($value);
+  }
 
   /**
    * @deprecated 代わりにaddHoursやendOfMonth等のメソッドを使うこと
