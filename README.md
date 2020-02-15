@@ -5,8 +5,11 @@
 ## Usage
 
 ```sh
-cp .env.template .env
+cp .env.example .env
+cp app/.env.example app/.env
 docker-compose build
+docker-compose rum --rm app composer install
+docker-compose rum --rm app php artisan migrate:fresh --seed
 ```
 
 ### Create new project
