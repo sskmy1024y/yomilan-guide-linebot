@@ -19,6 +19,10 @@ Route::group(['middleware' => ['api']], function () {
         Route::resource('facility', 'FacilitiesController', ['except' => ['create', 'edit']]);
         Route::resource('route', 'RouteController');
     });
+
+    Route::group(['namespace' => 'Api', 'prefix' => 'linebot'], function () {
+        Route::post('callback', 'LinebotController@callback');
+    });
 });
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
