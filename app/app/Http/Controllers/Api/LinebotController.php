@@ -28,15 +28,11 @@ class LinebotController extends Controller
     }
 
     $client = new CurlHTTPClient($access_token);
-    $args = [
+
+    $bot = new LINEBot($client, [
       'channelSecret' => $channel_secret,
-    ];
-
-    if (env('LINE_SIMULATOR')) {
-      $args['endpointBase'] = "http://host.docker.internal:8123";
-    }
-
-    $bot = new LINEBot($client, $args);
+      'endpointBase' => env('LINE_ENDPOINT_BASE', LINEBot::DEFAULT_ENDPOINT_BASE),
+    ]);
 
     try {
       $events = $bot->parseEventRequest($request_body, $signature);
