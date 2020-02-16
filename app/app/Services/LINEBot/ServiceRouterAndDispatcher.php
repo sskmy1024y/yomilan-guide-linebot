@@ -9,6 +9,9 @@ class ServiceRouterAndDispatcher
 {
   protected $event;
 
+  /**
+   * @param BaseEvent
+   */
   public function __construct($event)
   {
     $this->event = $event;
@@ -27,7 +30,7 @@ class ServiceRouterAndDispatcher
     $route_map = [
       'ルートを調べる' => [
         'action' => function () {
-          return null;
+          return Visit_Helper::initializeVisit($this->event);
         },
       ],
     ];

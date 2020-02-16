@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Services\LINEBot\GroupHelper;
 use App\Services\LINEBot\ServiceRouterAndDispatcher;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use LINE\LINEBot;
 use LINE\LINEBot\SignatureValidator;
 use LINE\LINEBot\Event\MessageEvent;
@@ -41,8 +40,6 @@ class LinebotController extends Controller
       $events = $bot->parseEventRequest($request_body, $signature);
 
       foreach ($events as $event) {
-        GroupHelper::identify($event);
-
         if ($event instanceof JoinEvent) {
           $reply_token = $event->getReplyToken();
           $bot->replyText($reply_token, "グループに追加してくれてありがとう！");

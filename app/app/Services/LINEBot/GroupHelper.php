@@ -10,7 +10,7 @@ use Util_Assert;
 class GroupHelper
 {
   /**
-   * グループIDが登録されているかどうかチェックする
+   * グループIDを取得する。登録されていない場合、追加する
    * 
    * @param JoinEvent $event join event
    * @return Group

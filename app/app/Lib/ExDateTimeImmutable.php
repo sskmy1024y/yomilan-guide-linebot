@@ -35,6 +35,18 @@ final class ExDateTimeImmutable extends Carbon\Carbon
     return $this->format('Y-m-d H:i:s');
   }
 
+  /**
+   * 
+   * @return array
+   */
+  public function DayBetween()
+  {
+    $start = (clone $this)->hour(0)->minute(0)->second(0);
+    $end = (clone $this)->hour(24)->minute(59)->second(59);
+
+    return [$start, $end];
+  }
+
   // ========================== 非推奨メソッドたち ==========================
 
   /**

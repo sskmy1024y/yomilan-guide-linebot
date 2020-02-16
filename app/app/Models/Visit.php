@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Visit extends Model
 {
+    protected $fillable = [
+        'group_id',
+    ];
+
     /**
      * 生成したルートを取得
      */
