@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\LINEBot\GroupHelper;
+use App\Services\LINEBot\ServiceRouterAndDispatcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use LINE\LINEBot;
@@ -10,6 +12,7 @@ use LINE\LINEBot\SignatureValidator;
 use LINE\LINEBot\Event\MessageEvent;
 use LINE\LINEBot\Event\MessageEvent\TextMessage;
 use LINE\LINEBot\Constant\HTTPHeader;
+use LINE\LINEBot\Event\JoinEvent;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
 
 class LinebotController extends Controller
@@ -38,11 +41,21 @@ class LinebotController extends Controller
       $events = $bot->parseEventRequest($request_body, $signature);
 
       foreach ($events as $event) {
-        if ($event instanceof MessageEvent && $event instanceof TextMessage) {   // テキストメッセージの場合
+        GroupHelper::identify($event);
+
+        if ($event instanceof JoinEvent) {
+          $reply_token = $event->getReplyToken();
+          $bot->replyText($reply_token, "グループに追加してくれてありがとう！");
+        } else if ($event instanceof MessageEvent && $event instanceof TextMessage) {   // テキストメッセージの場合
           $text = $event->getText();              // LINEで送信されたテキスト
           $reply_token = $event->getReplyToken(); // 返信用トークン
 
-          $bot->replyText($reply_token, $text);
+          $service = new ServiceRouterAndDispatcher($event);
+          $reply = $service->textRouterAndDispatch($text);
+
+          if ($reply !== null) {
+            $bot->replyMessage($reply_token, $reply);
+          }
         }
       }
     } catch (\Exception $e) {

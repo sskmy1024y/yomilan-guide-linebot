@@ -15,7 +15,6 @@ class CreateGroupsTable extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->string('group_id')->unique();
-            $table->enum('type', ['room', 'group']);
             $table->float('has_child_precent', 8, 5)->default(0.0);
             $table->enum('guess_class', ['C', 'T', 'M1', 'M2', 'M3', 'M4', 'F1', 'F2', 'F3'])->nullable();
             $table->timestamps();
