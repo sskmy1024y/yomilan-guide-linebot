@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Course;
+namespace App\Services\Route;
 
 use App\Models\Area;
 use App\Exceptions\Exception_AssertionFailed;
@@ -9,7 +9,7 @@ use App\Models\FacilityType;
 use Util_Assert;
 use Util_DateTime;
 
-class CourseGenerate
+class Route_Generate
 {
   private $start_time;
   private $end_time;
@@ -20,15 +20,21 @@ class CourseGenerate
   /**
    * コンストラクタの作成
    * 
-   * @param float $latitude
-   * @param float $longitude
+   * @param ExDateTimeImmutable $start
+   * @param ExDateTimeImmutable $end
+   * @param float $latitude 指定がない場合、入園口
+   * @param float $longitude 指定がない場合、入園口
    */
-  public function __construct($latitude = 0.0, $longitude = 0.0)
+  public function __construct($start, $end = null, $latitude = 35.6242, $longitude = 139.5174)
   {
+    if ($end === null) {
+      $end = (clone $start)->setTime(18, 0, 0); // FIXME: setTimeは、APIから終園時間を取得したものを使用する
+    }
+
     $this->latitude = $latitude;
     $this->longitude = $longitude;
-    $this->start_time = Util_DateTime::createFromHis('10:00:00');
-    $this->end_time = Util_DateTime::createFromHis('18:00:00');
+    $this->start_time = $start;
+    $this->end_time = $end;
   }
 
   /**
@@ -45,7 +51,7 @@ class CourseGenerate
 
   /**
    * 開始時間を設定
-   * @param datetime $start_time
+   * @param ExDateTimeImmutable $start_time
    */
   public function setStartTime($start_time)
   {
@@ -54,7 +60,7 @@ class CourseGenerate
 
   /**
    * 終了時間を設定
-   * @param datetime $start_time
+   * @param ExDateTimeImmutable $start_time
    */
   public function setEndTime($end_time)
   {
@@ -62,9 +68,11 @@ class CourseGenerate
   }
 
   /**
-   * メイン関数
+   * 生成
+   * 
+   * @return array
    */
-  public function main()
+  public function make(): array
   {
     $usable_time = $this->start_time->diffInMinutes($this->end_time);
 
@@ -98,8 +106,10 @@ class CourseGenerate
       $reaming = $orbit_time;
     } while ($reaming < $active_time);
 
-    $lanch = Facility::where("type", "=", FacilityType::RESTAURANT)->first();
-    $this->facilities = self::_mergeLanchFacility($lanch);
+    if ($lanch_time > 0) {
+      $lanch = Facility::where("type", "=", FacilityType::RESTAURANT)->first();
+      $this->facilities = self::_mergeLanchFacility($lanch);
+    }
 
     return [
       'use_time' => $reaming,

@@ -4,6 +4,8 @@ namespace App\Services\LINEBot;
 
 use LINE\LINEBot\MessageBuilder;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
+use App\Services\LINEBot\Actions\Visit_Action;
+use Util_Assert;
 
 class ServiceRouterAndDispatcher
 {
@@ -30,12 +32,23 @@ class ServiceRouterAndDispatcher
     $route_map = [
       'ルートを調べる' => [
         'action' => function () {
-          return Visit_Helper::initializeVisit($this->event);
+          return Visit_Action::initializeVisit($this->event);
         },
       ],
+      'ルートを生成して' => [
+        'action' => function () {
+          return Visit_Action::initializeVisit($this->event);
+        },
+      ],
+      'よみうりランド行きたい' => [
+        'action' => function () {
+          return new TextMessageBuilder('TODO : LIFFを開く');
+        }
+      ]
     ];
 
     if (array_key_exists($text, $route_map)) {
+      Util_Assert::keyExists($route_map[$text], 'action');
       return $route_map[$text]['action']();
     }
     return new TextMessageBuilder('別の言葉で言い直して');

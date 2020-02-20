@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVisitsTable extends Migration
+class CreateRouteFacilityTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateVisitsTable extends Migration
      */
     public function up()
     {
-        Schema::create('visits', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('group_id');
-            $table->datetime('start');
+        Schema::create('route_facility', function (Blueprint $table) {
+            $table->bigInteger('route_id')->unsigned();
+            $table->bigInteger('facility_id')->unsigned();
+            $table->integer('index');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateVisitsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('visits');
+        Schema::dropIfExists('route_facility');
     }
 }

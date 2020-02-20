@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Api\Internal;
 
 use App\Http\Controllers\Controller;
-use App\Services\Course\CourseGenerate;
+use App\Services\LINEBot\Actions\Visit_Action;
+use App\Services\LINEBot\GroupHelper;
+use App\Services\Route\Route_Generate;
 use Illuminate\Http\Request;
+use Util_Assert;
+use Util_DateTime;
 
 class RouteController extends Controller
 {
@@ -15,14 +19,8 @@ class RouteController extends Controller
      */
     public function index()
     {
-        // 新規作成時は入り口を固定
-        $entrance = [
-            'latitude' => 35.6242,
-            'longitude' => 139.5174,
-        ];
-
-        $auto = new CourseGenerate($entrance['latitude'], $entrance['longitude']);
-        return response()->json(['error' => false, 'message' => '', 'data' => $auto->main()]);
+        $auto = new Route_Generate(Util_DateTime::createFromHis('10:00:00'));
+        return response()->json(['error' => false, 'message' => '', 'data' => $auto->make()]);
     }
 
     /**
@@ -84,7 +82,10 @@ class RouteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $group_id = GroupHelper::identify($id)->group_id;
+        $route = Visit_Action::initializeVisit($group_id);
+
+        return response()->json(['error' => false, 'message' => '', 'data' => $route]);
     }
 
     /**
