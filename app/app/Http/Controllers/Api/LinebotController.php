@@ -30,16 +30,21 @@ class LinebotController extends Controller
     }
 
     $client = new CurlHTTPClient($access_token);
-
-    $bot = new LINEBot($client, [
-      'channelSecret' => $channel_secret,
-      'endpointBase' => env('LINE_ENDPOINT_BASE', LINEBot::DEFAULT_ENDPOINT_BASE),
-    ]);
+    $bot = new LINEBot($client, ['channelSecret' => $channel_secret]);
 
     try {
       $events = $bot->parseEventRequest($request_body, $signature);
 
       foreach ($events as $event) {
+        // デバッグ用のDummyTokenチェック
+        if ($event->getReplyToken() === 'dummyToken') {
+          $bot = new LINEBot($client, [
+            'channelSecret' => $channel_secret,
+            'endpointBase' => env('LINE_ENDPOINT_BASE', LINEBot::DEFAULT_ENDPOINT_BASE),
+          ]);
+        }
+
+        // ここからが分岐 ===================================
         if ($event instanceof JoinEvent) {
           $reply_token = $event->getReplyToken();
           $bot->replyText($reply_token, "グループに追加してくれてありがとう！");
