@@ -32,12 +32,12 @@ class ServiceRouterAndDispatcher
     $route_map = [
       'ルートを調べる' => [
         'action' => function () {
-          return Visit_Action::initializeVisit($this->event);
+          return Visit_Action::initVisitFromEvent($this->event);
         },
       ],
       'ルートを生成して' => [
         'action' => function () {
-          return Visit_Action::initializeVisit($this->event);
+          return Visit_Action::initVisitFromEvent($this->event);
         },
       ],
       'よみうりランド行きたい' => [

@@ -5,9 +5,8 @@ namespace App\Services\LINEBot\Actions;
 use App\Models\Route;
 use App\Models\Visit;
 use App\Services\LINEBot\GroupHelper;
+use App\Services\LINEBot\MessageHelper\RouteFlexMessage;
 use App\Services\LINEBot\RouteHelper;
-use Illuminate\Support\Facades\Log;
-use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use Util_DateTime;
 
 /**
@@ -56,7 +55,8 @@ class Visit_Action
   {
     $group_id = GroupHelper::identifyFromEvent($event)->group_id;
     $route = Visit_Action::initializeVisit($group_id);
-    return new TextMessageBuilder($route->id);
+
+    return new RouteFlexMessage($route);
   }
 
   /**

@@ -2,15 +2,9 @@
 
 namespace App\Services\LINEBot;
 
-use App\Models\Area;
-use App\Models\Facility;
-use App\Models\FacilityType;
-use App\Models\Group;
 use App\Models\Route;
 use App\Models\Visit;
 use App\Services\Route\Route_Generate;
-use Illuminate\Support\Facades\Log;
-use LINE\LINEBot\Event\JoinEvent;
 use Util_Assert;
 use Util_DateTime;
 
