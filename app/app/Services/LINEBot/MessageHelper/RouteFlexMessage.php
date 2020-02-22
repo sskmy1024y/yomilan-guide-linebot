@@ -2,6 +2,7 @@
 
 namespace App\Services\LINEBot\MessageHelper;
 
+use App\Models\FacilityType;
 use Illuminate\Support\Facades\Log;
 use LINE\LINEBot\Constant\Flex\ComponentFontSize;
 use LINE\LINEBot\Constant\Flex\ComponentFontWeight;
@@ -110,6 +111,13 @@ class RouteFlexMessage extends FlexMessageBuilder
       ->setText($time)
       ->setSize(ComponentFontSize::SM);
 
+    $dot_color = "#DDDDDD";
+    if ($facility->type == FacilityType::ATTRACTION) {
+      $dot_color = "#6486E3";
+    } else if ($facility->type == FacilityType::RESTAURANT) {
+      $dot_color = "#FF8946";
+    }
+
     $dot = BoxComponentBuilder::builder()
       ->setWidth("12px")
       ->setHeight("12px")
@@ -117,7 +125,7 @@ class RouteFlexMessage extends FlexMessageBuilder
       ->setCornerRadius("30px")
       ->setLayout(ComponentLayout::VERTICAL)
       ->setContents([FillerComponentBuilder::builder()])
-      ->setBorderColor("#6486E3");
+      ->setBorderColor($dot_color);
 
     $dotComponent = BoxComponentBuilder::builder()
       ->setLayout(ComponentLayout::VERTICAL)

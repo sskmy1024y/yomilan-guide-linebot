@@ -18,6 +18,7 @@ class LinebotController extends Controller
 {
   public function callback(Request $request)
   {
+    // LINEからのリクエスト情報を取得
     $channel_secret = env('LINE_CHANNEL_SECRET');
     $access_token = env('LINE_ACCESS_TOKEN');
     $request_body = $request->getContent();
