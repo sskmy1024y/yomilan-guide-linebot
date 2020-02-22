@@ -36,6 +36,17 @@ final class ExDateTimeImmutable extends Carbon\Carbon
   }
 
   /**
+   * H:i 形式の文字列を返す。
+   * 頻出パターンなので専用メソッドを用意してる。
+   * 
+   * @return string
+   */
+  public function Hi()
+  {
+    return $this->format('H:i');
+  }
+
+  /**
    * 
    * @return array
    */

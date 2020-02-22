@@ -2,8 +2,10 @@
 
 namespace App\Services\LINEBot\MessageHelper;
 
+use App\Models\Route;
 use App\Models\FacilityType;
-use Illuminate\Support\Facades\Log;
+use App\Models\Location;
+use App\Services\LINEBot\RouteHelper;
 use LINE\LINEBot\Constant\Flex\ComponentFontSize;
 use LINE\LINEBot\Constant\Flex\ComponentFontWeight;
 use LINE\LINEBot\Constant\Flex\ComponentLayout;
@@ -14,13 +16,15 @@ use LINE\LINEBot\MessageBuilder\Flex\ComponentBuilder\FillerComponentBuilder;
 use LINE\LINEBot\MessageBuilder\Flex\ComponentBuilder\TextComponentBuilder;
 use LINE\LINEBot\MessageBuilder\Flex\ContainerBuilder\BubbleContainerBuilder;
 use LINE\LINEBot\MessageBuilder\FlexMessageBuilder;
-use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\QuickReplyBuilder;
 use Util_DateTime;
 
 class RouteFlexMessage extends FlexMessageBuilder
 {
+  /** @var Route */
   private $route;
+
+  /** @var ExDateTimeImmutable */
   private $start_time;
 
   /**
@@ -86,19 +90,24 @@ class RouteFlexMessage extends FlexMessageBuilder
     $facilities = $this->route->facilities;
 
     $placeComponent[] = TextComponentBuilder::builder()
-      ->setText("入園予定時間: " . $this->start_time->format('H:i'))
+      ->setText("入園予定時間: " . $this->start_time->Hi())
       ->setSize(ComponentFontSize::XS)
       ->setColor("#b7b7b7");
 
-    foreach ($facilities as $facility) {
-      $placeComponent[] = self::_timeAndPlace("00:00", $facility);
+    $timestamp = clone $this->start_time;
+    foreach ($facilities as $key => $facility) {
+      if ($key === 0) {
+        $dist = RouteHelper::orbitTime([$facility], Location::enterance());
+      } else {
+        $dist = RouteHelper::orbitTime([$facilities[$key - 1], $facility]);
+      };
+      $placeComponent[] = self::_timeAndPlace($timestamp->addMinutes($dist)->Hi(), $facility);
     }
 
     return BoxComponentBuilder::builder()
       ->setLayout(ComponentLayout::VERTICAL)
       ->setContents($placeComponent);
   }
-
 
   /**
    * @param string $time `HH:mm`

@@ -25,6 +25,16 @@ class Location
   }
 
   /**
+   * 入園口のLocation
+   * 
+   * @return Location
+   */
+  public static function enterance()
+  {
+    return new self();
+  }
+
+  /**
    * 指定した在票との距離を返す
    * 
    * @param Location $location
@@ -33,11 +43,11 @@ class Location
   public function distance($location)
   {
     return Location::KMRADIUS * acos(
-      cos(deg2rad($this->latitude))
-        * cos(deg2rad($location->latitude))
-        * cos(deg2rad($location->longitude) - deg2rad($this->longitude))
-        + sin(deg2rad($this->latitude))
-        * sin(deg2rad($location->latitude))
+      cos(deg2rad($location->latitude))
+        * cos(deg2rad($this->latitude))
+        * cos(deg2rad($this->longitude) - deg2rad($location->longitude))
+        + sin(deg2rad($location->latitude))
+        * sin(deg2rad($this->latitude))
     );
   }
 
@@ -50,6 +60,6 @@ class Location
    */
   public function travelTime($location, $speed = 4.2)
   {
-    return $this->Distance($location) * $speed * 60;
+    return $this->distance($location) / $speed * 60;
   }
 }

@@ -68,8 +68,8 @@ class Facility extends Model
     /**
      * 指定したリストから、この施設に一番近い施設を返す
      * 
-     * @param array $facilities 
-     * @return array|null
+     * @param Facility[] $facilities 
+     * @return Facility|null
      */
     public function getMostNearFacility(array $facilities)
     {

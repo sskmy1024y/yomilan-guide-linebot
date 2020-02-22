@@ -7,9 +7,11 @@ use App\Exceptions\Exception_AssertionFailed;
 use App\Models\Facility;
 use App\Models\FacilityType;
 use App\Models\Location;
+use App\Services\LINEBot\RouteHelper;
 use Util_Assert;
 use Util_DateTime;
 use ExDateTimeImmutable;
+use Illuminate\Support\Facades\Log;
 
 class Route_Generate
 {
@@ -38,7 +40,7 @@ class Route_Generate
       $end = (clone $start)->setTime(18, 0, 0); // FIXME: setTimeは、APIから終園時間を取得したものを使用する
     }
     if ($location === null) {
-      $location = new Location;
+      $location = Location::enterance();
     }
 
     $this->location = $location;
@@ -101,7 +103,8 @@ class Route_Generate
       $_facilities = self::_sortByDistanceFromFacilities($_facilities);
 
       // 施設を回るのにかかる時間を計算
-      $orbit_time = self::_getOrbitTime($_facilities);
+      // $orbit_time = self::_getOrbitTime($_facilities);
+      $orbit_time = RouteHelper::orbitTime($_facilities, $this->location);
 
       // 直前の時間と同じならこれ以上施設がない = 検索終了
       if ($orbit_time == $reaming || $orbit_time > $active_time) {
@@ -193,39 +196,6 @@ class Route_Generate
   }
 
   /**
-   * 周回にかかる時間を算出
-   * 
-   * @param Facility[] $facilities
-   * @param bool $start_current 移動開始位置を現在地にする
-   * @return int minute
-   */
-  private function _getOrbitTime(array $facilities, $start_current = true): int
-  {
-    Util_Assert::notEmpty($facilities);
-
-    $sum = 0;
-    foreach ($facilities as $key => $facility) {
-      if ($key === 0) {
-        if ($start_current === false) continue;
-        $time = $this->location->travelTime($facility->location());
-      } else {
-        $time = $facilities[$key - 1]->location()->travelTime($facility->location());
-      }
-      $sum += $time;
-
-      $sum += $facility->require_time;
-
-      // TODO: 待ち時間を計算して付与。今は固定
-      $sum += 15;
-
-      $sum += 5;  // Padding Time
-    }
-
-
-    return (int) $sum;
-  }
-
-  /**
    * お昼ご飯の場所を、時間的に適切な順に挿入して返す
    * 
    * @param Facility $lanch お昼ご飯の場所
@@ -251,7 +221,7 @@ class Route_Generate
       $start_time = clone $this->start_time;
       $key = array_search($next->id, array_column($this->facilities, 'id'));
       $splited = array_chunk($this->facilities, $key);
-      $comp_time = $start_time->addMinutes(self::_getOrbitTime($splited[0]));
+      $comp_time = $start_time->addMinutes(RouteHelper::orbitTime($splited[0], $this->location));
 
       if ($comp_time->gte($lanch_start) && $comp_time->lte($lanch_end)) {
         $_facilities = array_merge($splited[0], [$lanch], $splited[1]);

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Services\Course\CourseGenerate;
+use App\Services\Route\Route_Generate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -26,7 +26,7 @@ class RouteGenerateTest extends TestCase
     public function routeGenerate()
     {
         $array = [];
-        $auto = new CourseGenerate($array);
-        $auto->generate();
+        $auto = new Route_Generate($array);
+        $auto->make();
     }
 }
