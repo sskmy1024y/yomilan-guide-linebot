@@ -6,33 +6,42 @@ use App\Models\Area;
 use App\Exceptions\Exception_AssertionFailed;
 use App\Models\Facility;
 use App\Models\FacilityType;
+use App\Models\Location;
 use Util_Assert;
 use Util_DateTime;
+use ExDateTimeImmutable;
 
 class Route_Generate
 {
+  /** @var ExDateTimeImmutable 入園開始時間 */
   private $start_time;
+
+  /** @var ExDateTimeImmutable 閉園時間 */
   private $end_time;
-  private $latitude;    // 現在位置（緯度）
-  private $longitude;   // 現在位置（経度）
-  private $facilities = [];   // 候補リスト
+
+  /** @var Location 現在地 */
+  private $location;
+
+  /** @var Facility[] 施設の候補リスト */
+  private $facilities = [];
 
   /**
    * コンストラクタの作成
    * 
    * @param ExDateTimeImmutable $start
    * @param ExDateTimeImmutable $end
-   * @param float $latitude 指定がない場合、入園口
-   * @param float $longitude 指定がない場合、入園口
+   * @param Location $location
    */
-  public function __construct($start, $end = null, $latitude = 35.6242, $longitude = 139.5174)
+  public function __construct($start, $end = null, $location = null)
   {
     if ($end === null) {
       $end = (clone $start)->setTime(18, 0, 0); // FIXME: setTimeは、APIから終園時間を取得したものを使用する
     }
+    if ($location === null) {
+      $location = new Location;
+    }
 
-    $this->latitude = $latitude;
-    $this->longitude = $longitude;
+    $this->location = $location;
     $this->start_time = $start;
     $this->end_time = $end;
   }
@@ -40,13 +49,11 @@ class Route_Generate
   /**
    * 現在地を設定
    * 
-   * @param float $latitude
-   * @param float $longitude
+   * @param Location $location
    */
-  public function setCurrentLocation($latitude, $longitude)
+  public function setCurrentLocation($location)
   {
-    $this->latitude = $latitude;
-    $this->longitude = $longitude;
+    $this->location = $location;
   }
 
   /**
@@ -120,8 +127,8 @@ class Route_Generate
   /**
    * エリア毎に施設をピックアップする
    * 
-   * @param array $exclude_ids 除外する施設のID
-   * @return array
+   * @param int[] $exclude_ids 除外する施設のID
+   * @return Facility[]
    */
   private function _getFacilitiesEveryArea(array $exclude_ids = []): array
   {
@@ -147,8 +154,8 @@ class Route_Generate
   /**
    * 施設の近さに基づいてリストを並び替えて返す
    * 
-   * @param array $_facilities 
-   * @return array
+   * @param Facility[] $_facilities 
+   * @return Facility[]
    */
   private function _sortByDistanceFromFacilities(array $_facilities)
   {
@@ -172,14 +179,14 @@ class Route_Generate
   /**
    * 施設の配列情報を、現在地からの近さで並べ替えて返す
    * 
-   * @param array $facilities 施設の配列
-   * @return array
+   * @param Facility[] $facilities 施設の配列
+   * @return Facility[]
    */
   private function _sortByDistanceFromCurrentLocation(array $facilities): array
   {
     Util_Assert::notEmpty($facilities);
     foreach ($facilities as $key => $facility) {
-      $sort[$key] = $facility->distance($this->latitude, $this->longitude);
+      $sort[$key] = $facility->distance($this->location);
     }
     array_multisort($sort, SORT_ASC, $facilities);
     return $facilities;
@@ -188,7 +195,7 @@ class Route_Generate
   /**
    * 周回にかかる時間を算出
    * 
-   * @param array $facilities
+   * @param Facility[] $facilities
    * @param bool $start_current 移動開始位置を現在地にする
    * @return int minute
    */
@@ -200,21 +207,9 @@ class Route_Generate
     foreach ($facilities as $key => $facility) {
       if ($key === 0) {
         if ($start_current === false) continue;
-        [, $time] = self::_intervalTwiceLocations([
-          'latitude' => $this->latitude,
-          'longitude' => $this->longitude,
-        ], [
-          'latitude' => $facility->latitude,
-          'longitude' => $facility->longitude,
-        ]);
+        $time = $this->location->travelTime($facility->location());
       } else {
-        [, $time] = self::_intervalTwiceLocations([
-          'latitude' => $facilities[$key - 1]->latitude,
-          'longitude' => $facilities[$key - 1]->longitude,
-        ], [
-          'latitude' => $facility->latitude,
-          'longitude' => $facility->longitude,
-        ]);
+        $time = $facilities[$key - 1]->location()->travelTime($facility->location());
       }
       $sum += $time;
 
@@ -223,35 +218,11 @@ class Route_Generate
       // TODO: 待ち時間を計算して付与。今は固定
       $sum += 15;
 
-      $sum += 5;  // 余白時間
+      $sum += 5;  // Padding Time
     }
 
 
     return (int) $sum;
-  }
-
-  /**
-   * 2つの座標間の距離と移動時間を返す
-   * 
-   * @param array['latitude','longitude'] $a
-   * @param array['latitude','longitude'] $b
-   * @return array[distance,time] 距離と時間(min)
-   */
-  private function _intervalTwiceLocations(array $a, array $b)
-  {
-    $speed = 75; // (m/min) 平均歩行速度を元に算出
-
-    $distance = 6371 * acos(
-      cos(deg2rad($a['latitude']))
-        * cos(deg2rad($b['latitude']))
-        * cos(deg2rad($b['longitude']) - deg2rad($a['longitude']))
-        + sin(deg2rad($a['latitude']))
-        * sin(deg2rad($b['latitude']))
-    );
-
-    $time = $distance * 1000 / $speed;
-
-    return [$distance, $time];
   }
 
   /**
