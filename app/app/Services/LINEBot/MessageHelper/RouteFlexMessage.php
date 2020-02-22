@@ -51,33 +51,34 @@ class RouteFlexMessage extends FlexMessageBuilder
    */
   private function _headerComponent()
   {
-    $label = TextComponentBuilder::builder();
-    $label->setText("DATE");
-    $label->setColor("#ffffff66");
-    $label->setSize(ComponentFontSize::XS);
+    $label = TextComponentBuilder::builder()
+      ->setText("DATE")
+      ->setColor("#ffffff66")
+      ->setSize(ComponentFontSize::XS);
 
-    $text = TextComponentBuilder::builder();
-    $text->setText($this->start_time->Ymd());
-    $text->setColor("#ffffff");
-    $text->setFlex(4);
-    $text->setSize(ComponentFontSize::SM);
-    $text->setWeight(ComponentFontWeight::BOLD);
+    $text = TextComponentBuilder::builder()
+      ->setText($this->start_time->Ymd())
+      ->setColor("#ffffff")
+      ->setFlex(4)
+      ->setSize(ComponentFontSize::SM)
+      ->setWeight(ComponentFontWeight::BOLD);
 
-    $dateComponent = BoxComponentBuilder::builder();
-    $dateComponent->setLayout(ComponentLayout::VERTICAL);
-    $dateComponent->setContents([$label, $text]);
+    $dateComponent = BoxComponentBuilder::builder()
+      ->setLayout(ComponentLayout::VERTICAL)
+      ->setContents([$label, $text]);
 
-    $titleComponent = TextComponentBuilder::builder();
-    $titleComponent->setText("よみうりランド ルート");
-    $titleComponent->setColor("#ffffff");
-    $titleComponent->setSize(ComponentFontSize::LG);
-    $titleComponent->setWeight(ComponentFontWeight::BOLD);
+    $titleComponent = TextComponentBuilder::builder()
+      ->setText("よみうりランド ルート")
+      ->setColor("#ffffff")
+      ->setSize(ComponentFontSize::LG)
+      ->setWeight(ComponentFontWeight::BOLD);
 
-    $headerComponentBuilder = BoxComponentBuilder::builder();
-    $headerComponentBuilder->setLayout(ComponentLayout::VERTICAL);
-    $headerComponentBuilder->setPaddingAll(ComponentSpacing::LG);
-    $headerComponentBuilder->setBackgroundColor('#0367D3');
-    $headerComponentBuilder->setContents([$dateComponent, $titleComponent]);
+    $headerComponentBuilder = BoxComponentBuilder::builder()
+      ->setLayout(ComponentLayout::VERTICAL)
+      ->setPaddingAll(ComponentSpacing::XL)
+      ->setPaddingBottom(ComponentSpacing::LG)
+      ->setBackgroundColor('#0367D3')
+      ->setContents([$dateComponent, $titleComponent]);
 
     return $headerComponentBuilder;
   }
@@ -106,6 +107,7 @@ class RouteFlexMessage extends FlexMessageBuilder
 
     return BoxComponentBuilder::builder()
       ->setLayout(ComponentLayout::VERTICAL)
+      ->setPaddingTop(ComponentSpacing::LG)
       ->setContents($placeComponent);
   }
 
