@@ -476,6 +476,18 @@ final class Util_Assert
   }
 
   /**
+   * @param  mixed $subject 検査される変数
+   * @return mixed
+   */
+  public static function notNull($subject)
+  {
+    if (is_null($subject) || $subject === null) {
+      throw new \Exception_AssertionFailed("the array must have some contents.");
+    }
+    return $subject;
+  }
+
+  /**
    * @param mixed $subject 検査される変数
    * @param mixed $comparison 一致判定を行う対象
    * @return mixed

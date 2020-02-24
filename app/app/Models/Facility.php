@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Util_Assert;
 
 class Facility extends Model
@@ -45,28 +46,30 @@ class Facility extends Model
     }
 
     /**
-     * 指定した座標との直線距離を返す
+     * 座標情報をLocationクラスで取得
+     * @return Location
+     */
+    public function location()
+    {
+        return new Location($this->latitude, $this->longitude);
+    }
+
+    /**
+     * 指定したLocationとの直線距離を返す
      * 
-     * @param float $latitude 緯度
-     * @param float $longitude 経度
+     * @param Location $location
      * @return float 距離(km)
      */
-    public function distance($latitude, $longitude)
+    public function distance($location)
     {
-        return 6371 * acos(
-            cos(deg2rad($latitude))
-                * cos(deg2rad($this->latitude))
-                * cos(deg2rad($this->longitude) - deg2rad($longitude))
-                + sin(deg2rad($latitude))
-                * sin(deg2rad($this->latitude))
-        );
+        return $this->location()->distance($location);
     }
 
     /**
      * 指定したリストから、この施設に一番近い施設を返す
      * 
-     * @param array $facilities 
-     * @return array|null
+     * @param Facility[] $facilities 
+     * @return Facility|null
      */
     public function getMostNearFacility(array $facilities)
     {
@@ -77,7 +80,7 @@ class Facility extends Model
             'facility' => null,
         ];
         foreach ($facilities as $facility) {
-            $distance = $this->distance($facility->latitude, $facility->longitude);
+            $distance = $this->distance($facility->location());
             if ($distance > $near['distance']) {
                 $near = [
                     'distance' => $distance,
