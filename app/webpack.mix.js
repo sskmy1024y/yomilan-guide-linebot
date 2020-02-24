@@ -21,7 +21,7 @@ if (mix.inProduction()) {
     mix.version();
 }
 
-mix.js("resources/assets/js/app.js", "public/assets/js")
+mix.ts("resources/assets/ts/app.ts", "public/assets/js")
     .sourceMaps(false, "source-map")
     .extract(["vue"])
     .sass("resources/assets/sass/app.scss", "public/assets/css");
