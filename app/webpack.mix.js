@@ -17,25 +17,21 @@ const barPlugin = new WebpackBarPlugin({
     name: "LIFF"
 });
 
+if (mix.inProduction()) {
+    mix.version();
+}
+
 mix.js("resources/assets/js/app.js", "public/assets/js")
+    .sourceMaps(false, "source-map")
     .extract(["vue"])
     .sass("resources/assets/sass/app.scss", "public/assets/css");
 
-if (mix.inProduction()) {
-    mix.version();
-} else {
-    mix.sourceMaps();
-}
-
 mix.webpackConfig({
     context: path.resolve(__dirname),
-    devtool: "source-map",
     plugins: [barPlugin],
-    // output: {
-    //     chunkFilename: mix.inProduction()
-    //         ? `[name].chunk.[chunkhash]${CACHE_KEY_SUFFIX}.js`
-    //         : "[name].chunk.[hash].dev.js"
-    // },
+    output: {
+        chunkFilename: mix.inProduction() ? `[name].js` : "[name].dev.js"
+    },
     watchOptions: {
         poll: 1000,
         ignored: "./node_modules/"

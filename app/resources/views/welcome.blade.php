@@ -15,19 +15,18 @@
 </head>
 
 <body>
-    <div class="content">
-        <div class="title m-b-md">
-            Laravel
-        </div>
-
-        <div id="app">
-            <example-component></example-component>
-        </div>
+    <div id="app">
+        <example-component></example-component>
     </div>
 
     <script src="{{ mix('/assets/js/manifest.js') }}"></script>
+    @if(config('app.env') === 'production')
     <script src="{{ mix('/assets/js/vendor.js') }}"></script>
     <script src="{{ mix('/assets/js/app.js') }}"></script>
+    @else
+    <script src="{{ mix('/assets/js/vendor.dev.js') }}"></script>
+    <script src="{{ mix('/assets/js/app.dev.js') }}"></script>
+    @endif
 </body>
 
 </html>
