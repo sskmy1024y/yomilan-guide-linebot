@@ -11,30 +11,31 @@ const WebpackBarPlugin = require("webpackbar");
  | file for the application as well as bundling up all the JS files.
  |
  */
+const CACHE_KEY_SUFFIX = "-1";
 
 const barPlugin = new WebpackBarPlugin({
     name: "LIFF"
 });
 
-const production = process.env.NODE_ENV === "production";
+mix.js("resources/assets/js/app.js", "public/assets/js")
+    .extract(["vue"])
+    .sass("resources/assets/sass/app.scss", "public/assets/css");
 
-mix.js("resources/assets/js/app.js", "public/js").sass(
-    "resources/assets/sass/app.scss",
-    "public/css"
-);
+if (mix.inProduction()) {
+    mix.version();
+} else {
+    mix.sourceMaps();
+}
 
 mix.webpackConfig({
     context: path.resolve(__dirname),
-    output: {
-        filename: production
-            ? `[name].bundle.[chunkhash]${CACHE_KEY_SUFFIX}.js`
-            : "[name].bundle.[hash].dev.js",
-        chunkFilename: production
-            ? `[name].chunk.[chunkhash]${CACHE_KEY_SUFFIX}.js`
-            : "[name].chunk.[hash].dev.js"
-    },
     devtool: "source-map",
     plugins: [barPlugin],
+    // output: {
+    //     chunkFilename: mix.inProduction()
+    //         ? `[name].chunk.[chunkhash]${CACHE_KEY_SUFFIX}.js`
+    //         : "[name].chunk.[hash].dev.js"
+    // },
     watchOptions: {
         poll: 1000,
         ignored: "./node_modules/"

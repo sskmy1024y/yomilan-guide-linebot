@@ -10,8 +10,8 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     <!-- Styles -->
+    <link rel="stylesheet" href="{{ mix('/assets/css/app.css') }}">
 </head>
 
 <body>
@@ -24,7 +24,10 @@
             <example-component></example-component>
         </div>
     </div>
-    <script src=" {{ mix('js/app.js') }} "></script>
+
+    <script src="{{ mix('/assets/js/manifest.js') }}"></script>
+    <script src="{{ mix('/assets/js/vendor.js') }}"></script>
+    <script src="{{ mix('/assets/js/app.js') }}"></script>
 </body>
 
 </html>
