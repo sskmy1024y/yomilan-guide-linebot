@@ -16,7 +16,7 @@
 
 <body>
     <div id="app">
-        <example-component></example-component>
+        <app />
     </div>
 
     <script src="{{ mix('/assets/js/manifest.js') }}"></script>
