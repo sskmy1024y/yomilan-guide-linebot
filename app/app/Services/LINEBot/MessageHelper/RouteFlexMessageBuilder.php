@@ -19,7 +19,7 @@ use LINE\LINEBot\MessageBuilder\FlexMessageBuilder;
 use LINE\LINEBot\QuickReplyBuilder;
 use Util_DateTime;
 
-class RouteFlexMessage extends FlexMessageBuilder
+class RouteFlexMessageBuilder extends FlexMessageBuilder
 {
   /** @var Route */
   private $route;

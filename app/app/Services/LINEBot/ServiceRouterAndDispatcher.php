@@ -2,6 +2,7 @@
 
 namespace App\Services\LINEBot;
 
+use App\Services\LINEBot\Actions\Route_Action;
 use LINE\LINEBot\MessageBuilder;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use App\Services\LINEBot\Actions\Visit_Action;
@@ -30,9 +31,9 @@ class ServiceRouterAndDispatcher
   public function textRouterAndDispatch($text)
   {
     $route_map = [
-      'ルートを調べる' => [
+      'ルートを見たい' => [
         'action' => function () {
-          return Visit_Action::initVisitFromEvent($this->event);
+          return Route_Action::showCurrentRouteFromEvent($this->event);
         },
       ],
       'ルートを生成して' => [

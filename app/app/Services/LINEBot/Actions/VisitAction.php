@@ -5,8 +5,10 @@ namespace App\Services\LINEBot\Actions;
 use App\Models\Route;
 use App\Models\Visit;
 use App\Services\LINEBot\GroupHelper;
-use App\Services\LINEBot\MessageHelper\RouteFlexMessage;
+use App\Services\LINEBot\MessageHelper\RouteFlexMessageBuilder;
 use App\Services\LINEBot\RouteHelper;
+use App\Services\LINEBot\VisitHelper;
+use Util_Assert;
 use Util_DateTime;
 
 /**
@@ -23,14 +25,16 @@ class Visit_Action
   /**
    * 入園に関する初期化を行い、ルート生成をする
    * 
-   * @param int $group_id グループID
+   * @param string $group_id グループID
    * @return Route
    */
   public static function initializeVisit($group_id)
   {
+    Util_Assert::nonEmptyString($group_id);
+
     $start = Util_DateTime::createFromHis('10:00:00');  // TODO: 開始日時はLIFFから取得する
 
-    $visit = self::_sameDayVisit($group_id, $start);
+    $visit = VisitHelper::sameDayVisit($group_id, $start);
     if ($visit === null) {
       $visit = Visit::create([
         'group_id' => $group_id,
@@ -38,7 +42,7 @@ class Visit_Action
       ]);
     }
 
-    $route = self::_latestRoute($visit->id);
+    $route = RouteHelper::latest($visit->id);
     if ($route === false) {
       $route = RouteHelper::makeRoute($visit->id);
     }
@@ -56,30 +60,6 @@ class Visit_Action
     $group_id = GroupHelper::identifyFromEvent($event)->group_id;
     $route = Visit_Action::initializeVisit($group_id);
 
-    return new RouteFlexMessage($route);
-  }
-
-  /**
-   * 生成ずみのルートを取得。無ければfalse
-   * 
-   * @param int $visit_id
-   * @return Route|false
-   */
-  private static function _latestRoute($visit_id)
-  {
-    $route = Route::where('visit_id', $visit_id)->latest()->first();
-    return $route === null ? false : $route;
-  }
-
-  /**
-   * 同じ日にすでにvisitが発行されているかどうかを確認する
-   * 
-   * @param int $group_id
-   * @param ExDateTimeImmutable $date
-   * @return Visit|null
-   */
-  private static function _sameDayVisit($group_id, $date)
-  {
-    return Visit::where('group_id', $group_id)->whereBetween('created_at', $date->DayBetween())->first();
+    return new RouteFlexMessageBuilder($route);
   }
 }

@@ -76,4 +76,17 @@ class RouteHelper
 
     return (int) $sum_time;
   }
+
+  /**
+   * VisitIDから生成ずみのルートを取得。無ければfalse
+   * 
+   * @param int $visit_id
+   * @return Route|false
+   */
+  public static function latest($visit_id)
+  {
+    Util_Assert::positiveInt($visit_id);
+    $route = Route::where('visit_id', $visit_id)->latest()->first();
+    return $route === null ? false : $route;
+  }
 }

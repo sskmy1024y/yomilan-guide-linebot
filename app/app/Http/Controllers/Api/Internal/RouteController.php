@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Internal;
 
 use App\Http\Controllers\Controller;
+use App\Services\LINEBot\Actions\Route_Action;
 use App\Services\LINEBot\Actions\Visit_Action;
 use App\Services\LINEBot\GroupHelper;
 use App\Services\Route\Route_Generate;
@@ -59,7 +60,11 @@ class RouteController extends Controller
      */
     public function show($id)
     {
-        //
+        $group_id = GroupHelper::identify($id)->group_id;
+        $date = Util_DateTime::createNow();
+        $route = Route_Action::showCurrentRoute($group_id, $date);
+
+        return response()->json(['error' => false, 'message' => '', 'data' => $route]);
     }
 
     /**

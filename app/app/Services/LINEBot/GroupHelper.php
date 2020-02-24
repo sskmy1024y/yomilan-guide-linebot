@@ -12,7 +12,7 @@ class GroupHelper
   /**
    * グループ情報を取得する。登録されていない場合は、追加する
    * 
-   * @param int $group_id
+   * @param string $group_id
    * @return Group
    */
   public static function identify($group_id)
