@@ -1,5 +1,4 @@
 import Vue from "vue";
-import App from "./app.vue";
 
 require("./bootstrap");
 
@@ -9,7 +8,11 @@ require("./bootstrap");
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+import App from "./app.vue";
 Vue.component("app", App);
+
+import LiffBody from "./pages/LIFF/liff-body.vue";
+Vue.component("liff-body", LiffBody);
 
 const app = new Vue({});
 app.$mount("#app");
