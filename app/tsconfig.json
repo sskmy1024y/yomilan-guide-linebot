@@ -6,7 +6,6 @@
     "noImplicitAny": true,
     "module": "es2015",
     "allowJs": true,
-    "noEmit": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "moduleResolution": "node",
@@ -19,6 +18,9 @@
     ]
   },
   "include": [
-    "resources/assets/ts/**/*"
+    "resources/assets/**/*"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }
