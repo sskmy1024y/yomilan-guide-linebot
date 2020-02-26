@@ -1,12 +1,15 @@
 <template>
-    <div>あああああああああああああああ {{ limit }}</div>
+  <div>あああああああああああああああ {{ limit }}</div>
 </template>
 
-<script lang="ts">
+<script>
 export default {
-    name: "liff-body",
-    props: {
-        limit: Number
-    }
+  name: "liff-body",
+  props: {
+    limit: Number
+  },
+  created() {
+    console.log(this.limit);
+  }
 };
 </script>
