@@ -16,8 +16,10 @@
   </el-card>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from 'vue'
+
+export default Vue.extend({
   name: 'facility-card',
   data() {
     return {
@@ -30,7 +32,7 @@ export default {
   created() {
     console.log(this.check)
   }
-}
+})
 </script>
 
 <style lang="scss">
