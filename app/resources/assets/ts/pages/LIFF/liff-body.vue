@@ -1,15 +1,16 @@
 <template>
-  <div>あああああああああああああああ {{ limit }}</div>
+  <facility-card />
 </template>
 
 <script>
+import FacilityCard from '../../components/views/card/facility-card.vue'
 export default {
-  name: "liff-body",
+  name: 'liff-body',
+  components: {
+    FacilityCard
+  },
   props: {
     limit: Number
-  },
-  created() {
-    console.log(this.limit);
   }
-};
+}
 </script>

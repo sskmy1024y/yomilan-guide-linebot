@@ -15,10 +15,11 @@
       "es2017",
       "es2016",
       "dom"
-    ]
+    ],
+    "rootDir": "resources/assets/ts",
   },
   "include": [
-    "resources/assets/**/*"
+    "resources/assets/ts/**/*"
   ],
   "exclude": [
     "node_modules"

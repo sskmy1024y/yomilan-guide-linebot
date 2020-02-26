@@ -2,6 +2,7 @@
 <html lang="ja">
 
 <head>
+  @include('includes.partials.page_meta')
   <link rel="stylesheet" href="{{ mix('/assets/css/app.css') }}" type="text/css">
 </head>
 

@@ -1,5 +1,6 @@
-const mix = require("laravel-mix");
-const WebpackBarPlugin = require("webpackbar");
+const mix = require('laravel-mix')
+const WebpackBarPlugin = require('webpackbar')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 /*
  |--------------------------------------------------------------------------
@@ -11,29 +12,29 @@ const WebpackBarPlugin = require("webpackbar");
  | file for the application as well as bundling up all the JS files.
  |
  */
-const CACHE_KEY_SUFFIX = "-1";
 
 const barPlugin = new WebpackBarPlugin({
-    name: "LIFF"
-});
+  name: 'LIFF'
+})
 
 if (mix.inProduction()) {
-    mix.version();
+  mix.version()
 }
 
-mix.ts("resources/assets/ts/app.ts", "public/assets/js")
-    .sourceMaps(false, "source-map")
-    .extract(["vue"])
-    .sass("resources/assets/sass/app.scss", "public/assets/css");
+mix
+  .ts('resources/assets/ts/app.ts', 'public/assets/js')
+  .sourceMaps(false, 'source-map')
+  .extract(['vue'])
+  .sass('resources/assets/sass/app.scss', 'public/assets/css')
 
 mix.webpackConfig({
-    context: path.resolve(__dirname),
-    plugins: [barPlugin],
-    output: {
-        chunkFilename: mix.inProduction() ? `[name].js` : "[name].dev.js"
-    },
-    watchOptions: {
-        poll: 1000,
-        ignored: "./node_modules/"
-    }
-});
+  context: path.resolve(__dirname),
+  plugins: [barPlugin],
+  output: {
+    chunkFilename: mix.inProduction() ? `[name].js` : '[name].dev.js'
+  },
+  watchOptions: {
+    poll: 1000,
+    ignored: './node_modules/'
+  }
+})

@@ -1,6 +1,9 @@
-import Vue from "vue";
-
-require("./bootstrap");
+import Vue from 'vue'
+import ElementUI from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/ja'
+import App from './app.vue'
+import LiffBody from './pages/LIFF/liff-body.vue'
+import 'element-ui/lib/theme-chalk/index.css'
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -8,11 +11,10 @@ require("./bootstrap");
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-import App from "./app.vue";
-Vue.component("app", App);
+Vue.use(ElementUI, { locale })
 
-import LiffBody from "./pages/LIFF/liff-body.vue";
-Vue.component("liff-body", LiffBody);
+Vue.component('app', App)
+Vue.component('liff-body', LiffBody)
 
-const app = new Vue({});
-app.$mount("#app");
+const app = new Vue({})
+app.$mount('#app')
