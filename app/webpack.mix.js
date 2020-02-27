@@ -40,6 +40,6 @@ if (mix.inProduction()) {
 } else {
   mix.browserSync({
     proxy: 'localhost:3000',
-    files: ['./resources/views/**/*.blade.php', './public/css/*.css', './public/js/*.js']
+    files: ['resources/views/**/*.blade.php', 'public/**/*.*']
   })
 }
