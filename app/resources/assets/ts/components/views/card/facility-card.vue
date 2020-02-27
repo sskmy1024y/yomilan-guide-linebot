@@ -20,7 +20,7 @@
               score-template="人気度 {value}"
             />
           </div>
-          <el-checkbox v-model="check" label="行きたい!" border />
+          <el-checkbox v-model="selected" label="行きたい!" border />
         </div>
       </div>
     </el-card>
@@ -34,7 +34,6 @@ export default Vue.extend({
   name: 'facility-card',
   data() {
     return {
-      check: false,
       rate: 5
     }
   },
@@ -50,6 +49,14 @@ export default Vue.extend({
     },
     description(): String {
       return this.item.description
+    },
+    selected: {
+      set(value) {
+        this.$emit('set-select', this.item.id, value)
+      },
+      get() {
+        return this.item.selected
+      }
     }
   }
 })

@@ -1,5 +1,8 @@
 <template>
-  <facilities-carousel :items="facilities" />
+  <div>
+    <facilities-carousel :items="facilities" @set-select="select" />
+    <div>{{selectedIds}}</div>
+  </div>
 </template>
 
 <script>
@@ -29,14 +32,41 @@ export default {
   name: 'liff-body',
   data() {
     return {
-      facilities: [facility, facility, facility]
+      selectedIds: []
     }
   },
   components: {
     FacilitiesCarousel
   },
+  methods: {
+    select(id, selected = undefined) {
+      const scroll = document.getElementById('facility-carousel')
+      if (selected === undefined) {
+        selected = this.selectedIds.includes(id)
+      }
+      this.selectedIds = selected
+        ? this.selectedIds.filter(_id => _id !== id)
+        : [...this.selectedIds, id]
+      if (scroll.scrollLeft < scroll.scrollWidth) {
+        document.getElementById('facility-carousel').scrollLeft +=
+          scroll.scrollWidth / this.facilities.length - 16
+      }
+    }
+  },
   props: {
     limit: Number
+  },
+  computed: {
+    facilities() {
+      return [1, 2, 3].map(id => {
+        const selected = this.selectedIds.includes(id)
+        return {
+          ...facility,
+          id,
+          selected
+        }
+      })
+    }
   }
 }
 </script>

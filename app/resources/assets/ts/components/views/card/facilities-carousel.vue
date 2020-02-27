@@ -1,6 +1,11 @@
 <template>
-  <div class="carousel">
-    <facility-card v-for="(facility, index) in items" :key="index" :item="facility" />
+  <div id="facility-carousel" class="carousel">
+    <facility-card
+      v-for="(facility, index) in items"
+      :key="index"
+      :item="facility"
+      @set-select="select"
+    />
   </div>
 </template>
 
@@ -17,6 +22,11 @@ export default Vue.extend({
     items: {
       type: Array,
       required: true
+    }
+  },
+  methods: {
+    select(id: Number) {
+      this.$emit('set-select', id)
     }
   }
 })

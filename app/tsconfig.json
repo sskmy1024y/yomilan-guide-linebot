@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "noImplicitAny": true,
-    "module": "es2015",
-    "allowJs": true,
-    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": false,
     "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "es6",
     "moduleResolution": "node",
-    "target": "es6",
+    "sourceMap": true,
+    "target": "es5",
     "lib": [
       "es2018",
       "es2017",
