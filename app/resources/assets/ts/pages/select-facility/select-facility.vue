@@ -1,21 +1,18 @@
 <template>
   <div>
-    <select-facility v-if="currentPage === 2" />
-    <footer-nav>
-      <select-footer
-        :showPrev="currentPage > 1"
-        :done="currentPage === 2"
-        @prev="onPrevPage"
-        @next="onNextPage"
-      />
-    </footer-nav>
+    <div class="title-container">
+      <h1>おすすめアトラクション</h1>
+      <div class="description">周りたいアトラクションを選ぶことで、コースを作るときに自動的に組み込まれるよ</div>
+    </div>
+    <facilities-carousel :items="facilities" @set-select="select" />
+    <want-facility-list :items="selectedList" @set-select="select" />
   </div>
 </template>
 
-<script>
-import SelectFooter from '../select-facility/select-footer.vue'
-import SelectFacility from '../select-facility/select-facility.vue'
-import FooterNav from '../../components/views/footer-nav/footer-nav.vue'
+<script lang="ts">
+import Vue from 'vue'
+import FacilitiesCarousel from '../../components/views/card/facilities-carousel.vue'
+import WantFacilityList from '../../components/views/want-list/want-facility-list.vue'
 
 const facility = {
   name: 'バンデット',
@@ -37,18 +34,16 @@ const facility = {
   url: 'http://www.yomiuriland.com/attraction/bandit.html'
 }
 
-export default {
-  name: 'liff-body',
+export default Vue.extend({
+  name: 'select-facility',
   data() {
     return {
-      currentPage: 1,
       selectedIds: []
     }
   },
   components: {
-    SelectFooter,
-    SelectFacility,
-    FooterNav
+    FacilitiesCarousel,
+    WantFacilityList
   },
   methods: {
     select(id, select = undefined) {
@@ -66,22 +61,7 @@ export default {
     },
     selected(id) {
       return this.selectedIds.includes(id)
-    },
-    onPrevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage -= 1
-      }
-    },
-    onNextPage() {
-      if (this.currentPage === 2) {
-        // TODO: 登録作業 & LIFFを閉じる
-        return
-      }
-      this.currentPage += 1
     }
-  },
-  props: {
-    limit: Number
   },
   computed: {
     facilities() {
@@ -98,5 +78,21 @@ export default {
       return this.facilities.filter(facility => this.selected(facility.id))
     }
   }
-}
+})
 </script>
+
+<style lang="scss" scoped>
+.title-container {
+  margin: 10px;
+  h1 {
+    font-size: 24px;
+    font-weight: 00;
+    padding: 4px 0;
+    margin: 0;
+  }
+  .description {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.64);
+  }
+}
+</style>
