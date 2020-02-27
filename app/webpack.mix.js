@@ -17,10 +17,6 @@ const barPlugin = new WebpackBarPlugin({
   name: 'LIFF'
 })
 
-if (mix.inProduction()) {
-  mix.version()
-}
-
 mix
   .ts('resources/assets/ts/app.ts', 'public/assets/js')
   .sourceMaps(false, 'source-map')
@@ -38,3 +34,12 @@ mix.webpackConfig({
     ignored: './node_modules/'
   }
 })
+
+if (mix.inProduction()) {
+  mix.version()
+} else {
+  mix.browserSync({
+    proxy: 'localhost:3000',
+    files: ['./resources/views/**/*.blade.php', './public/css/*.css', './public/js/*.js']
+  })
+}

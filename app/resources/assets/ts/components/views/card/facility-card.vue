@@ -35,7 +35,7 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
 h3 {
   margin: 4px 0;
 }
