@@ -18,7 +18,7 @@ export default Vue.extend({
   bottom: 0;
   width: 100vw;
   height: 40px;
-  padding: 8px 0;
+  padding: 8px 0 16px;
   border-top: 1px solid rgba(0, 0, 0, 0.16);
   background-color: #fff;
 }

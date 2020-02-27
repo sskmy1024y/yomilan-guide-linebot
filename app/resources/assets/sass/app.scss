@@ -1,16 +1,17 @@
 // Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+JP&display=swap');
 
 // Variables
-@import "variables";
+@import 'variables';
 
 .navbar-laravel {
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 body {
-    margin: 0;
-    color: rgba(0, 0, 0, 0.64);
-    background-color: #ebebeb;
+  font-family: 'Noto Sans JP';
+  margin: 0;
+  color: rgba(0, 0, 0, 0.64);
+  background-color: #ebebeb;
 }

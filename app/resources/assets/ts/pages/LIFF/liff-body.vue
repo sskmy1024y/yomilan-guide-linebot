@@ -1,7 +1,11 @@
 <template>
-  <div>
+  <div v-loading.fullscreen.lock="loading">
     <div class="main">
-      <select-date v-if="currentPage === 1" :datetime="datetime" @set-datetime="setDatetime" />
+      <select-date
+        v-if="currentPage === 1"
+        :datetime="datetime"
+        @set-datetime="setDatetime"
+      />
       <select-facility
         v-if="currentPage === 2"
         :facilities="facilities"
@@ -50,7 +54,8 @@ export default {
   name: 'liff-body',
   data() {
     return {
-      lineId: '',
+      loading: true,
+      lineId: '', // 個人ではなくgroupID or roomID
       currentPage: 1,
       datetime: new Date(
         new Date(new Date().setDate(new Date().getDate() + 1)).setHours(11, 0)
@@ -85,6 +90,12 @@ export default {
     },
     setDatetime(datetime) {
       this.datetime = datetime
+    },
+    setLINEData() {
+      const context = liff.getContext()
+      if (context && context.type !== 'none') {
+        this.lineId = context.roomId ?? context.groupId ?? ''
+      }
     }
   },
   props: {
@@ -104,6 +115,17 @@ export default {
     selectedList() {
       return this.facilities.filter(facility => this.selected(facility.id))
     }
+  },
+  created() {
+    liff
+      .init({
+        liffId: '1653895916-Q4beDgJp'
+      })
+      .then(() => {
+        // start to use LIFF's api
+        this.loading = false
+        this.setLINEData()
+      })
   }
 }
 </script>
@@ -111,7 +133,7 @@ export default {
 <style lang="scss" scoped>
 .main {
   overflow-y: scroll;
-  padding-bottom: 56px;
+  padding-bottom: 64px;
   -ms-overflow-style: none;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;

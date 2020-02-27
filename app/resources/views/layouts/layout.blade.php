@@ -4,6 +4,7 @@
 <head>
   @include('includes.partials.page_meta')
   <link rel="stylesheet" href="{{ mix('/assets/css/app.css') }}" type="text/css">
+  <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
 </head>
 
 <body>
@@ -19,6 +20,7 @@
   <script src="{{ mix('/assets/js/vendor.dev.js') }}"></script>
   <script src="{{ mix('/assets/js/app.dev.js') }}"></script>
   @endif
+
 </body>
 
 </html>
