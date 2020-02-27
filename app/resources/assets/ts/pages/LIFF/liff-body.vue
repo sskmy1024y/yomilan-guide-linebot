@@ -1,11 +1,14 @@
 <template>
   <div>
-    <select-facility
-      v-if="currentPage === 2"
-      :facilities="facilities"
-      :selectedIds="selectedIds"
-      @select="select"
-    />
+    <div class="main">
+      <select-date v-if="currentPage === 1" :datetime="datetime" @set-datetime="setDatetime" />
+      <select-facility
+        v-if="currentPage === 2"
+        :facilities="facilities"
+        :selectedIds="selectedIds"
+        @select="select"
+      />
+    </div>
     <footer-nav>
       <select-footer
         :showPrev="currentPage > 1"
@@ -18,6 +21,7 @@
 </template>
 
 <script>
+import SelectDate from '../select-date/select-date.vue'
 import SelectFooter from '../select-facility/select-footer.vue'
 import SelectFacility from '../select-facility/select-facility.vue'
 import FooterNav from '../../components/views/footer-nav/footer-nav.vue'
@@ -46,11 +50,16 @@ export default {
   name: 'liff-body',
   data() {
     return {
+      lineId: '',
       currentPage: 1,
+      datetime: new Date(
+        new Date(new Date().setDate(new Date().getDate() + 1)).setHours(11, 0)
+      ),
       selectedIds: []
     }
   },
   components: {
+    SelectDate,
     SelectFooter,
     SelectFacility,
     FooterNav
@@ -73,6 +82,9 @@ export default {
         return
       }
       this.currentPage += 1
+    },
+    setDatetime(datetime) {
+      this.datetime = datetime
     }
   },
   props: {
@@ -80,7 +92,7 @@ export default {
   },
   computed: {
     facilities() {
-      return [1, 2, 3].map(id => {
+      return [1, 2, 3, 4, 5, 6, 7].map(id => {
         const selected = this.selected(id)
         return {
           ...facility,
@@ -95,3 +107,13 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.main {
+  overflow-y: scroll;
+  padding-bottom: 56px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+</style>

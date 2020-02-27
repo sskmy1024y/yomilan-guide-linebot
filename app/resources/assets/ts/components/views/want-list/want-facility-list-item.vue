@@ -35,8 +35,7 @@ export default Vue.extend({
   align-items: center;
   justify-content: space-between;
   background-color: #fff;
-  padding: 4px 10px;
-  border-radius: 4px;
+  padding: 8px;
 
   .name {
     font-size: 16px;

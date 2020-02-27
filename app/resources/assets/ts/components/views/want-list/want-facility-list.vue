@@ -51,20 +51,21 @@ export default Vue.extend({
 h2 {
   margin: 0;
   padding-bottom: 4px;
-  color: #1f2f3d;
   font-size: 18px;
   font-weight: 400;
 }
 
 .list-container {
-  padding: 8px;
   min-height: 20px;
-  border: 1px solid rgba(64, 158, 255, 0.16);
-  background-color: rgba(64, 158, 255, 0.08);
   border-radius: 4px;
 
-  > .list-row + .list-row {
-    margin-top: 5px;
+  > *:first-child {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+  > *:last-child {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
   }
 }
 
