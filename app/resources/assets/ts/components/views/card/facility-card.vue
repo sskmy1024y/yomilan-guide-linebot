@@ -7,7 +7,7 @@
           class="image"
         />
       </div>
-      <div style="padding: 14px;">
+      <div class="detail-container">
         <h3>{{ name }}</h3>
         <div>{{ description }}</div>
         <div class="select-wrapper">
@@ -61,29 +61,37 @@ h3 {
 }
 
 .facility-card {
-  width: 280px;
-}
+  white-space: normal;
+  word-wrap: break-word;
 
-.rate-container {
-  display: flex;
-}
+  .thumbnail {
+    display: block;
+    width: 100%;
+    height: 180px;
 
-.select-wrapper {
-  display: flex;
-  justify-content: space-between;
-  margin: 10px 0;
-}
+    .image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 
-.thumbnail {
-  display: block;
-  width: 100%;
-  height: 180px;
-}
+  .detail-container {
+    width: 275px;
+    padding: 14px;
+    box-sizing: border-box;
 
-.image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    .select-wrapper {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      .rate-container {
+        display: flex;
+        padding-right: 8px;
+        white-space: initial;
+      }
+    }
+  }
 }
 </style>
 

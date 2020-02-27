@@ -1,9 +1,9 @@
 <template>
-  <facility-card :item="facility" />
+  <facilities-carousel :items="facilities" />
 </template>
 
 <script>
-import FacilityCard from '../../components/views/card/facility-card.vue'
+import FacilitiesCarousel from '../../components/views/card/facilities-carousel.vue'
 
 const facility = {
   name: 'バンデット',
@@ -29,11 +29,11 @@ export default {
   name: 'liff-body',
   data() {
     return {
-      facility: facility
+      facilities: [facility, facility, facility]
     }
   },
   components: {
-    FacilityCard
+    FacilitiesCarousel
   },
   props: {
     limit: Number
