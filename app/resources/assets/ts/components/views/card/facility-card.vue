@@ -64,7 +64,8 @@ export default Vue.extend({
 
 <style lang="scss" scope>
 h3 {
-  margin: 4px 0;
+  margin: 0;
+  font-size: 18px;
 }
 
 .facility-card {
@@ -85,8 +86,9 @@ h3 {
 
   .detail-container {
     width: 275px;
-    padding: 14px;
+    padding: 10px;
     box-sizing: border-box;
+    font-size: 14px;
 
     .select-wrapper {
       display: flex;
