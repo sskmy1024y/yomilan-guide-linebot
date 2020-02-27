@@ -83,7 +83,20 @@ export default {
     },
     onNextPage() {
       if (this.currentPage === 2) {
-        // TODO: 登録作業 & LIFFを閉じる
+        this.$confirm(
+          '入力された情報を元にコースを生成します。よろしいですか？',
+          '確認',
+          {
+            confirmButtonText: 'はい',
+            cancelButtonText: 'キャンセル',
+            type: 'warning',
+            customClass: 'small-confirm'
+          }
+        ).then(() => {
+          if (this.lineId !== '') {
+            liff.closeWindow()
+          }
+        })
         return
       }
       this.currentPage += 1
@@ -126,6 +139,15 @@ export default {
         this.loading = false
         this.setLINEData()
       })
+    document.addEventListener(
+      'touchstart',
+      event => {
+        if (event.touches.length > 1) {
+          event.preventDefault()
+        }
+      },
+      true
+    )
   }
 }
 </script>

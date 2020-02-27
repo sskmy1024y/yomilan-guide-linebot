@@ -5,13 +5,22 @@
 @import 'variables';
 
 .navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 body {
-  font-family: 'Noto Sans JP';
-  margin: 0;
-  color: rgba(0, 0, 0, 0.64);
-  background-color: #ebebeb;
+    font-family: 'Noto Sans JP';
+    margin: 0;
+    color: rgba(0, 0, 0, 0.64);
+    background-color: #ebebeb;
+}
+
+input {
+    font-size: 16px !important;
+}
+
+.small-confirm {
+    width: 100%;
+    margin-top: 50%;
 }
