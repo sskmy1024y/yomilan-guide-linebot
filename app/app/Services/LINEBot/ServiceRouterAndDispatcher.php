@@ -6,6 +6,7 @@ use App\Services\LINEBot\Actions\Route_Action;
 use LINE\LINEBot\MessageBuilder;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use App\Services\LINEBot\Actions\Visit_Action;
+use App\Services\LINEBot\MessageHelper\RouteFlexMessageBuilder;
 use Util_Assert;
 
 class ServiceRouterAndDispatcher
@@ -67,4 +68,15 @@ class ServiceRouterAndDispatcher
   // {
   //   return new TextMessageBuilder($res);
   // }
+
+
+  /**
+   * @param string $group_id
+   * @return MessageBuilder|null
+   */
+  public static function staticDispatch($group_id)
+  {
+    $route = Visit_Action::initializeVisit($group_id);
+    return new RouteFlexMessageBuilder($route);
+  }
 }

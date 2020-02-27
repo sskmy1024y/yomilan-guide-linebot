@@ -3,13 +3,13 @@
     <div class="main">
       <select-date
         v-if="currentPage === 1"
-        :datetime="datetime"
+        :datetime="data.datetime"
         @set-datetime="setDatetime"
       />
       <select-facility
         v-if="currentPage === 2"
         :facilities="facilities"
-        :selectedIds="selectedIds"
+        :selectedIds="data.selectedIds"
         @select="select"
       />
     </div>
@@ -54,13 +54,15 @@ export default {
   name: 'liff-body',
   data() {
     return {
+      data: {
+        groupId: '', // 個人ではなくgroupID or roomID
+        datetime: new Date(
+          new Date(new Date().setDate(new Date().getDate() + 1)).setHours(11, 0)
+        ),
+        selectedIds: []
+      },
       loading: true,
-      lineId: '', // 個人ではなくgroupID or roomID
-      currentPage: 1,
-      datetime: new Date(
-        new Date(new Date().setDate(new Date().getDate() + 1)).setHours(11, 0)
-      ),
-      selectedIds: []
+      currentPage: 1
     }
   },
   components: {
@@ -71,10 +73,10 @@ export default {
   },
   methods: {
     select(ids) {
-      this.selectedIds = ids
+      this.data.selectedIds = ids
     },
     selected(id) {
-      return this.selectedIds.includes(id)
+      return this.data.selectedIds.includes(id)
     },
     onPrevPage() {
       if (this.currentPage > 1) {
@@ -93,8 +95,16 @@ export default {
             customClass: 'small-confirm'
           }
         ).then(() => {
-          if (this.lineId !== '') {
-            liff.closeWindow()
+          if (this.data.groupId !== '') {
+            fetch('https://sho-pazn.localhost.run/api/linebot/postback', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+              },
+              body: JSON.stringify(this.data)
+            }).then(() => {
+              liff.closeWindow()
+            })
           }
         })
         return
@@ -102,12 +112,12 @@ export default {
       this.currentPage += 1
     },
     setDatetime(datetime) {
-      this.datetime = datetime
+      this.data.datetime = datetime
     },
     setLINEData() {
       const context = liff.getContext()
       if (context && context.type !== 'none') {
-        this.lineId = context.roomId ?? context.groupId ?? ''
+        this.data.groupId = context.roomId ?? context.groupId ?? ''
       }
     }
   },

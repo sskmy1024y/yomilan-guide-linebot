@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\LINEBot\GroupHelper;
 use App\Services\LINEBot\ServiceRouterAndDispatcher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use LINE\LINEBot;
 use LINE\LINEBot\SignatureValidator;
 use LINE\LINEBot\Event\MessageEvent;
@@ -62,6 +62,28 @@ class LinebotController extends Controller
         }
       }
     } catch (\Exception $e) {
+    }
+  }
+
+  public function postback(Request $request)
+  {
+    $channel_secret = env('LINE_CHANNEL_SECRET');
+    $access_token = env('LINE_ACCESS_TOKEN');
+
+    $httpClient = new CurlHTTPClient($access_token);
+    $bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
+
+    $group_id = $request->input('groupId');
+    $datetime = $request->input('datetime'); // Array
+    $selected_ids = $request->input('selectedIds');
+    $message = ServiceRouterAndDispatcher::staticDispatch($group_id);
+
+    // TODO: $datetimeを元にVisitを作成
+    // TODO: $selected_idsを元にWantFacilityを設定
+
+    if ($message !== null) {
+      $response = $bot->pushMessage($group_id, $message);
+      Log::info($response->getHTTPStatus() . ' ' . $response->getRawBody());
     }
   }
 }
