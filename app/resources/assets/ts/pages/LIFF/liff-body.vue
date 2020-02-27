@@ -1,6 +1,11 @@
 <template>
   <div>
-    <select-facility v-if="currentPage === 2" />
+    <select-facility
+      v-if="currentPage === 2"
+      :facilities="facilities"
+      :selectedIds="selectedIds"
+      @select="select"
+    />
     <footer-nav>
       <select-footer
         :showPrev="currentPage > 1"
@@ -51,18 +56,8 @@ export default {
     FooterNav
   },
   methods: {
-    select(id, select = undefined) {
-      const scroll = document.getElementById('facility-carousel')
-      if (select === undefined) {
-        select = !this.selected(id)
-      }
-      this.selectedIds = select
-        ? [...this.selectedIds, id]
-        : this.selectedIds.filter(_id => _id !== id)
-      if (scroll.scrollLeft < scroll.scrollWidth) {
-        document.getElementById('facility-carousel').scrollLeft +=
-          scroll.scrollWidth / this.facilities.length - 16
-      }
+    select(ids) {
+      this.selectedIds = ids
     },
     selected(id) {
       return this.selectedIds.includes(id)
