@@ -87,8 +87,9 @@ class RouteController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $start = Util_DateTime::createFromHis('10:00:00');
         $group_id = GroupHelper::identify($id)->group_id;
-        $route = Visit_Action::initializeVisit($group_id);
+        $route = Visit_Action::initializeVisit($group_id, $start);
 
         return response()->json(['error' => false, 'message' => '', 'data' => $route]);
     }

@@ -26,25 +26,18 @@ class Visit_Action
    * 入園に関する初期化を行い、ルート生成をする
    * 
    * @param string $group_id グループID
+   * @param ExDateTimeImmutable $datetime 開始時間
+   * @param Array $want_facilities_ids 希望するアトラクションのIDリスト
    * @return Route
    */
-  public static function initializeVisit($group_id)
+  public static function initializeVisit($group_id, $datetime, $want_facilities_ids = [])
   {
     Util_Assert::nonEmptyString($group_id);
 
-    $start = Util_DateTime::createFromHis('10:00:00');  // TODO: 開始日時はLIFFから取得する
-
-    $visit = VisitHelper::sameDayVisit($group_id, $start);
-    if ($visit === null) {
-      $visit = Visit::create([
-        'group_id' => $group_id,
-        'start' => $start,
-      ]);
-    }
-
+    $visit = VisitHelper::insertIgnore($group_id, $datetime);
     $route = RouteHelper::latest($visit->id);
     if ($route === false) {
-      $route = RouteHelper::makeRoute($visit->id);
+      $route = RouteHelper::makeRoute($visit->id, $want_facilities_ids);
     }
     return $route;
   }
@@ -57,8 +50,9 @@ class Visit_Action
    */
   public static function initVisitFromEvent($event)
   {
+    $start = Util_DateTime::createFromHis('10:00:00');  // TODO: 開始日時はLIFFから取得する
     $group_id = GroupHelper::identifyFromEvent($event)->group_id;
-    $route = Visit_Action::initializeVisit($group_id);
+    $route = Visit_Action::initializeVisit($group_id, $start);
 
     return new RouteFlexMessageBuilder($route);
   }

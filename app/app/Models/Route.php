@@ -16,6 +16,11 @@ class Route extends Model
         return $this->visit->group_id;
     }
 
+    public function want_facilities()
+    {
+        return $this->hasMany('App\Models\WantFacility');
+    }
+
     public function facilities()
     {
         return $this->belongsToMany('App\Models\Facility', 'route_facility', 'route_id', 'facility_id')->withPivot('index');

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\LINEBot\Actions\Visit_Action;
+use App\Services\LINEBot\MessageHelper\RouteFlexMessageBuilder;
 use App\Services\LINEBot\ServiceRouterAndDispatcher;
+use App\Services\LINEBot\VisitHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use LINE\LINEBot;
@@ -13,6 +16,7 @@ use LINE\LINEBot\Event\MessageEvent\TextMessage;
 use LINE\LINEBot\Constant\HTTPHeader;
 use LINE\LINEBot\Event\JoinEvent;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
+use Util_DateTime;
 
 class LinebotController extends Controller
 {
@@ -74,12 +78,13 @@ class LinebotController extends Controller
     $bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
 
     $group_id = $request->input('groupId');
-    $datetime = $request->input('datetime'); // Array
+    $_datetime = $request->input('datetime'); // Array
     $selected_ids = $request->input('selectedIds');
-    $message = ServiceRouterAndDispatcher::staticDispatch($group_id);
 
-    // TODO: $datetimeを元にVisitを作成
-    // TODO: $selected_idsを元にWantFacilityを設定
+    $datetime = Util_DateTime::createFromYmdHis($_datetime);
+    $route = Visit_Action::initializeVisit($group_id, $datetime, $selected_ids);
+
+    $message = new RouteFlexMessageBuilder($route);
 
     if ($message !== null) {
       $response = $bot->pushMessage($group_id, $message);

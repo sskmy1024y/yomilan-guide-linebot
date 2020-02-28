@@ -7,6 +7,7 @@ use App\Models\Visit;
 use App\Services\Route\Route_Generate;
 use Util_Assert;
 use Util_DateTime;
+use Util_Validate;
 
 class RouteHelper
 {
@@ -14,9 +15,10 @@ class RouteHelper
    * ルートを生成して登録する
    * 
    * @param int $visit_id 紐づけるための入場ID
+   * @param Array $want_facilities_ids 周回希望のアトラクションリスト
    * @return Route
    */
-  public static function makeRoute($visit_id)
+  public static function makeRoute($visit_id, $want_facilities_ids = [])
   {
     $visit = Visit::find($visit_id);
     Util_Assert::notNull($visit);
@@ -26,16 +28,21 @@ class RouteHelper
     $gen = new Route_Generate($start_time);
     $gen_route = $gen->make();
 
+    $route = new Route;
+    $route->visit_id = $visit_id;
+    $route->save();
+
+    if (count($want_facilities_ids) > 0) {
+      $route->want_facilities()->attach($want_facilities_ids);
+      $route->save();
+    }
+
     $props = [];
     foreach ($gen_route['facilities'] as $index => $facility) {
       $props[$facility->id] = [
         'index' => $index,
       ];
     }
-
-    $route = new Route;
-    $route->visit_id = $visit_id;
-    $route->save();
     $route->facilities()->attach($props);
     $route->save();
 

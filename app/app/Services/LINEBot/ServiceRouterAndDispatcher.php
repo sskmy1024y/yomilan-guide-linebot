@@ -74,9 +74,9 @@ class ServiceRouterAndDispatcher
    * @param string $group_id
    * @return MessageBuilder|null
    */
-  public static function staticDispatch($group_id)
+  public static function staticDispatch($group_id, $datetime)
   {
-    $route = Visit_Action::initializeVisit($group_id);
+    $route = Visit_Action::initializeVisit($group_id, $datetime);
     return new RouteFlexMessageBuilder($route);
   }
 }
