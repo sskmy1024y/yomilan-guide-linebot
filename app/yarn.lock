@@ -4840,10 +4840,10 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-liff-type@^2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/liff-type/-/liff-type-2.0.5.tgz#91125de0669a4459f7b9b8be1046860e06e1a8a1"
-  integrity sha512-YsELTiXlG05/fQkcLBT+NxnUF3q+Nv+YMLeZkVKDQ/SVMgFKydu+diW2SxfZyIkdvLKnzf1dqzMUC68Bc4xxyQ==
+liff-type@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/liff-type/-/liff-type-2.0.6.tgz#9e611541fd27f33a8e4ad9861b41d78ab7c62f56"
+  integrity sha512-GuTqo5+wj5ufXLe9m80EMK6inMqu6Mf4UHiuLkUAOLWqlZ9f/oU3uZyFyuy2YpaXMbMUM2+OKL7qW2m71N+1eQ==
   dependencies:
     "@line/bot-sdk" "^6.8.2"
 

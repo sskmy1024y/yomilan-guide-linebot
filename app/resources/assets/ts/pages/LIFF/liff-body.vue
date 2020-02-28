@@ -13,6 +13,7 @@
         @select="select"
       />
     </div>
+    {{ data.groupId }}
     <footer-nav>
       <select-footer
         :showPrev="currentPage > 1"
@@ -24,11 +25,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import SelectDate from '../select-date/select-date.vue'
 import SelectFooter from '../select-facility/select-footer.vue'
 import SelectFacility from '../select-facility/select-facility.vue'
 import FooterNav from '../../components/views/footer-nav/footer-nav.vue'
+import { formatDate } from '../../utils/datetime'
 
 const facility = {
   name: 'バンデット',
@@ -50,7 +53,7 @@ const facility = {
   url: 'http://www.yomiuriland.com/attraction/bandit.html'
 }
 
-export default {
+export default Vue.extend({
   name: 'liff-body',
   data() {
     return {
@@ -96,12 +99,15 @@ export default {
           }
         ).then(() => {
           if (this.data.groupId !== '') {
-            fetch('https://sho-pazn.localhost.run/api/linebot/postback', {
+            fetch(`https://${location.hostname}/api/linebot/postback`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json; charset=utf-8'
               },
-              body: JSON.stringify(this.data)
+              body: JSON.stringify({
+                ...this.data,
+                datetime: formatDate(this.data.datetime)
+              })
             }).then(() => {
               liff.closeWindow()
             })
@@ -159,7 +165,7 @@ export default {
       true
     )
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

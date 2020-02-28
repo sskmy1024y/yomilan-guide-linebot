@@ -39,7 +39,6 @@ export default Vue.extend({
 })
 </script>
 
-
 <style lang="scss" scoped>
 .title-container {
   margin: 10px;
