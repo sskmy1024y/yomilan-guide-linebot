@@ -38,7 +38,8 @@ class ServiceRouterAndDispatcher
       ],
       'ルートを生成して' => [
         'action' => function () {
-          return Visit_Action::initVisitFromEvent($this->event);
+          // return Visit_Action::initVisitFromEvent($this->event);
+          return new TextMessageBuilder('line://app/1653895916-Q4beDgJp');
         },
       ],
       'よみうりランド行きたい' => [

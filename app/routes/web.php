@@ -17,6 +17,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/hoge', function () {
-    return view('welcome');
+Route::get('/liff', function () {
+    return view('pages/liff');
 });
