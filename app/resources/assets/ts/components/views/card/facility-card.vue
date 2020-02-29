@@ -2,14 +2,11 @@
   <div class="facility-card">
     <el-card :body-style="{ padding: '0px' }" :shadow="'always'">
       <div class="thumbnail">
-        <img
-          src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-          class="image"
-        />
+        <img :src="imagePath" class="image" />
       </div>
       <div class="detail-container">
         <h3>{{ name }}</h3>
-        <div>{{ description }}</div>
+        <text-elipsis :line-height="20" :line-limit="2">{{ description }}</text-elipsis>
         <div class="select-wrapper">
           <div class="rate-container">
             <el-rate
@@ -29,6 +26,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import TextElipsis from '../../base/text-elipsis/text-elipsis.vue'
 
 export default Vue.extend({
   name: 'facility-card',
@@ -36,6 +34,9 @@ export default Vue.extend({
     return {
       rate: 5
     }
+  },
+  components: {
+    TextElipsis
   },
   props: {
     item: {
@@ -49,6 +50,12 @@ export default Vue.extend({
     },
     description(): String {
       return this.item.description
+    },
+    imagePath(): String {
+      return (
+        this.item.image_path ??
+        'https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png'
+      )
     },
     selected: {
       set(value) {
@@ -85,14 +92,19 @@ h3 {
   }
 
   .detail-container {
+    display: flex;
     width: 275px;
+    min-height: 147px;
     padding: 10px;
-    box-sizing: border-box;
     font-size: 14px;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
 
     .select-wrapper {
       display: flex;
       justify-content: space-between;
+      align-self: flex-end;
       margin: 10px 0;
       .rate-container {
         display: flex;

@@ -2,25 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Facility;
+use App\Models\FacilityType;
 use Illuminate\Http\Request;
 
 class LIFFController extends Controller
 {
   public function index(Request $request)
   {
-    $gameSessionID = $request->session_id;
-    $view = "LIFF/index";
-    switch ($request->method) {
-      case 'decide':
-        $view = "LIFF/decide";
-        break;
-      case 'showkeyword':
-        $view = "LIFF/showkeyword";
-        break;
-      case 'result':
-        $view = "LIFF/result";
-        break;
-    }
-    return view($view, compact('gameSessionID'));
+    $facilities = Facility::where('type', '=', FacilityType::ATTRACTION)->inRandomOrder()->limit(5)->get();
+
+    $view = "pages/liff";
+    return view($view, compact('facilities'));
   }
 }

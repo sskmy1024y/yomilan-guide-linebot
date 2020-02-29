@@ -128,19 +128,13 @@ export default Vue.extend({
     }
   },
   props: {
-    limit: Number
+    limit: Number,
+    facilities: {
+      type: Array,
+      required: true
+    }
   },
   computed: {
-    facilities() {
-      return [1, 2, 3, 4, 5, 6, 7].map(id => {
-        const selected = this.selected(id)
-        return {
-          ...facility,
-          id,
-          selected
-        }
-      })
-    },
     selectedList() {
       return this.facilities.filter(facility => this.selected(facility.id))
     }
