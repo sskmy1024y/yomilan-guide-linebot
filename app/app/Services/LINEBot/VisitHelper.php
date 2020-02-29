@@ -18,7 +18,7 @@ class VisitHelper
   public static function sameDayVisit($group_id, $date)
   {
     Util_Assert::nonEmptyString($group_id);
-    return Visit::where('group_id', $group_id)->whereBetween('created_at', $date->DayBetween())->first();
+    return Visit::where('group_id', $group_id)->whereBetween('created_at', $date->DayBetween())->latest()->first();
   }
 
   /**

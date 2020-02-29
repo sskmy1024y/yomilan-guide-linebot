@@ -1,11 +1,7 @@
 <template>
   <div v-loading.fullscreen.lock="loading">
     <div class="main">
-      <select-date
-        v-if="currentPage === 1"
-        :datetime="data.datetime"
-        @set-datetime="setDatetime"
-      />
+      <select-date v-if="currentPage === 1" :datetime="data.datetime" @set-datetime="setDatetime" />
       <select-facility
         v-if="currentPage === 2"
         :facilities="facilities"
@@ -32,6 +28,7 @@ import SelectFooter from '../select-facility/select-footer.vue'
 import SelectFacility from '../select-facility/select-facility.vue'
 import FooterNav from '../../components/views/footer-nav/footer-nav.vue'
 import { formatDate } from '../../utils/datetime'
+import LIFF from 'liff-type'
 
 const facility = {
   name: 'バンデット',
@@ -99,16 +96,19 @@ export default Vue.extend({
           }
         ).then(() => {
           if (this.data.groupId !== '') {
-            fetch(`https://${location.hostname}/api/linebot/postback`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json; charset=utf-8'
-              },
-              body: JSON.stringify({
-                ...this.data,
-                datetime: formatDate(this.data.datetime)
-              })
-            }).then(() => {
+            fetch(
+              `https://${location.hostname}:${location.port}/api/linebot/postback`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify({
+                  ...this.data,
+                  datetime: formatDate(this.data.datetime)
+                })
+              }
+            ).then(() => {
               liff.closeWindow()
             })
           }

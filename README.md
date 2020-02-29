@@ -8,7 +8,7 @@
 cp .env.example .env
 cp app/.env.example app/.env
 docker-compose build
-docker-compose rum --rm app bash
+docker-compose run --rm app bash
   COMPOSER_MEMORY_LIMIT=-1 composer install
   exit
 docker-compose up -d

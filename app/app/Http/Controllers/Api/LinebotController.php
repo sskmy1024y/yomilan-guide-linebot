@@ -78,7 +78,7 @@ class LinebotController extends Controller
     $bot = new LINEBot($httpClient, ['channelSecret' => $channel_secret]);
 
     $group_id = $request->input('groupId');
-    $_datetime = $request->input('datetime'); // Array
+    $_datetime = $request->input('datetime');
     $selected_ids = $request->input('selectedIds');
 
     $datetime = Util_DateTime::createFromYmdHis($_datetime);

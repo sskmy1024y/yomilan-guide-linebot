@@ -3,7 +3,6 @@
 namespace App\Services\Route;
 
 use App\Models\Area;
-use App\Exceptions\Exception_AssertionFailed;
 use App\Models\Facility;
 use App\Models\FacilityType;
 use App\Models\Location;
@@ -203,8 +202,8 @@ class Route_Generate
    */
   private function _mergeLanchFacility($lanch)
   {
-    $lanch_start = Util_DateTime::createFromHis("11:30:00");
-    $lanch_end = Util_DateTime::createFromHis("13:30:00");
+    $lanch_start = (clone $this->start_time)->setTime(11, 30);
+    $lanch_end = (clone $this->start_time)->setTime(13, 30);
     $_facilities = [];
     /**
      * 1. 飲食店の近くのアトラクションを探す
@@ -218,8 +217,12 @@ class Route_Generate
     }
 
     while (count($_facilities) <= count($this->facilities)) {
-      $start_time = clone $this->start_time;
+      $start_time = (clone $this->start_time);
       $key = array_search($next->id, array_column($this->facilities, 'id'));
+      if ($key === false) {
+        throw new \Exception_AssertionFailed('該当する施設が見つかりませんでした', $next);
+      }
+
       $splited = array_chunk($this->facilities, $key);
       $comp_time = $start_time->addMinutes(RouteHelper::orbitTime($splited[0], $this->location));
 

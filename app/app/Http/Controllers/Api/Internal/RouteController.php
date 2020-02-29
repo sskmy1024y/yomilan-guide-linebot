@@ -64,7 +64,12 @@ class RouteController extends Controller
         $date = Util_DateTime::createNow();
         $route = Route_Action::showCurrentRoute($group_id, $date);
 
-        return response()->json(['error' => false, 'message' => '', 'data' => $route]);
+        $data = [
+            'route' => $route,
+            'facilities' => $route->facilities
+        ];
+
+        return response()->json(['error' => false, 'message' => '', 'data' => $data]);
     }
 
     /**
@@ -87,11 +92,16 @@ class RouteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $start = Util_DateTime::createFromHis('10:00:00');
+        $start = Util_DateTime::createFromHis('11:00:00');
         $group_id = GroupHelper::identify($id)->group_id;
         $route = Visit_Action::initializeVisit($group_id, $start);
 
-        return response()->json(['error' => false, 'message' => '', 'data' => $route]);
+        $data = [
+            'route' => $route,
+            'facilities' => $route->facilities
+        ];
+
+        return response()->json(['error' => false, 'message' => '', 'data' => $data]);
     }
 
     /**

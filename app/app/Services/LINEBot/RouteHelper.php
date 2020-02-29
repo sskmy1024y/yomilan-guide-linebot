@@ -15,7 +15,7 @@ class RouteHelper
    * ルートを生成して登録する
    * 
    * @param int $visit_id 紐づけるための入場ID
-   * @param Array $want_facilities_ids 周回希望のアトラクションリスト
+   * @param int[] $want_facilities_ids 周回希望のアトラクションリスト
    * @return Route
    */
   public static function makeRoute($visit_id, $want_facilities_ids = [])
