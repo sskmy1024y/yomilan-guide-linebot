@@ -18,7 +18,7 @@ class Route extends Model
 
     public function want_facilities()
     {
-        return $this->hasMany('App\Models\WantFacility');
+        return $this->belongsToMany('App\Models\Facility', 'want_facility', 'route_id', 'facility_id')->withTimestamps();
     }
 
     public function facilities()

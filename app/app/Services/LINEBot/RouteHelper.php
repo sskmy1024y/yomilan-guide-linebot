@@ -2,6 +2,7 @@
 
 namespace App\Services\LINEBot;
 
+use App\Models\Facility;
 use App\Models\Route;
 use App\Models\Visit;
 use App\Services\Route\Route_Generate;
@@ -34,15 +35,12 @@ class RouteHelper
 
     // 行きたいリストを登録
     if (count($want_facilities_ids) > 0) {
-      $request_param = [];
-      foreach ($want_facilities_ids as $_facility_id) {
-        $request_param[] = [
-          'facility_id' => $_facility_id
-        ];
-      }
-      $route->want_facilities()->createMany($request_param);
+      $_want_facilities = Facility::whereIn('id', $want_facilities_ids)->get();
+      $route->want_facilities()->attach($_want_facilities);
       $route->save();
-      // $gen->setFacilitiesByIds($route->want_facilities);
+      foreach ($route->want_facilities as $want_facility) {
+        $gen->setFacility($want_facility);
+      }
     }
 
     $gen_route = $gen->make();

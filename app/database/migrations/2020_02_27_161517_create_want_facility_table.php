@@ -16,6 +16,7 @@ class CreateWantFacilityTable extends Migration
         Schema::create('want_facility', function (Blueprint $table) {
             $table->bigInteger('route_id')->unsigned();
             $table->bigInteger('facility_id')->unsigned();
+            $table->primary(['route_id', 'facility_id']);
             $table->timestamps();
         });
     }
