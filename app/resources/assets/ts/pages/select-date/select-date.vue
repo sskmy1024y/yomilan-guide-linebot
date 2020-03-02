@@ -13,7 +13,7 @@
             default-time="11:00"
             format="yyyy/MM/dd HH:mm"
             :picker-options="{
-              selectableRange: '11:00:00 - 18:00:00'
+              selectableRange: '11:00:00 - 17:30:00'
             }"
             :clearable="false"
           ></el-date-picker>
