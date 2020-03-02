@@ -19,6 +19,7 @@
     <footer-nav>
       <select-footer
         :showPrev="currentPage > 1"
+        :showNext="data.groupId !== ''"
         :done="currentPage === 2"
         @prev="onPrevPage"
         @next="onNextPage"
@@ -139,12 +140,17 @@ export default Vue.extend({
       if (context && context.type !== 'none') {
         this.data.groupId = context.roomId ?? context.groupId ?? ''
       }
-      liff.getProfile().then(({ displayName, pictureUrl }) => {
-        this.profile = {
-          displayName,
-          pictureUrl
-        }
-      })
+      liff
+        .getProfile()
+        .then(({ displayName, pictureUrl }) => {
+          this.profile = {
+            displayName,
+            pictureUrl
+          }
+        })
+        .catch(e => {
+          this.profile.displayName = 'この端末からは登録できません'
+        })
     }
   },
   props: {
