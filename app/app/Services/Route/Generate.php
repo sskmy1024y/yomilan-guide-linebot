@@ -76,6 +76,22 @@ class Route_Generate
   }
 
   /**
+   * FacilityIdの配列を元に、候補リストに挿入する
+   * @param int[] $ids facilityIdの配列
+   */
+  public function setFacilitiesByIds(array $ids)
+  {
+    $_facilities = [];
+    foreach ($ids as $facility_id) {
+      $_facility = Facility::find($facility_id);
+      if ($_facilities !== null) {
+        $_facilities[] = $_facility;
+      }
+    }
+    $this->facilities = array_merge($this->facilities, $_facilities);
+  }
+
+  /**
    * 生成
    * 
    * @return array

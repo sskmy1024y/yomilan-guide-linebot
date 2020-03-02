@@ -18,7 +18,7 @@ class Route extends Model
 
     public function want_facilities()
     {
-        return $this->belongsToMany('App\Models\WantFacility', 'want_facilities', 'route_id', 'facility_id');
+        return $this->hasMany('App\Models\WantFacility');
     }
 
     public function facilities()

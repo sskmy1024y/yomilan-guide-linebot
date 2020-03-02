@@ -5,6 +5,7 @@ namespace App\Services\LINEBot;
 use App\Models\Route;
 use App\Models\Visit;
 use App\Services\Route\Route_Generate;
+use Illuminate\Support\Facades\Log;
 use Util_Assert;
 use Util_DateTime;
 use Util_Validate;
@@ -26,17 +27,25 @@ class RouteHelper
     $start_time = Util_DateTime::createFromYmdHis($visit->start);
 
     $gen = new Route_Generate($start_time);
-    $gen_route = $gen->make();
 
     $route = new Route;
     $route->visit_id = $visit_id;
     $route->save();
 
+    // 行きたいリストを登録
     if (count($want_facilities_ids) > 0) {
-      $route->want_facilities()->attach($want_facilities_ids);
+      $request_param = [];
+      foreach ($want_facilities_ids as $_facility_id) {
+        $request_param[] = [
+          'facility_id' => $_facility_id
+        ];
+      }
+      $route->want_facilities()->createMany($request_param);
       $route->save();
+      // $gen->setFacilitiesByIds($route->want_facilities);
     }
 
+    $gen_route = $gen->make();
     $props = [];
     foreach ($gen_route['facilities'] as $index => $facility) {
       $props[$facility->id] = [

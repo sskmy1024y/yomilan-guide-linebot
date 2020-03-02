@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWantFacilitiesTable extends Migration
+class CreateWantFacilityTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateWantFacilitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('want_facilities', function (Blueprint $table) {
+        Schema::create('want_facility', function (Blueprint $table) {
             $table->bigInteger('route_id')->unsigned();
             $table->bigInteger('facility_id')->unsigned();
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateWantFacilitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('want_facilities');
+        Schema::dropIfExists('want_facility');
     }
 }
