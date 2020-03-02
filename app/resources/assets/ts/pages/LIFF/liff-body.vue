@@ -1,7 +1,13 @@
 <template>
   <div v-loading.fullscreen.lock="loading">
     <div class="main">
-      <select-date v-if="currentPage === 1" :datetime="data.datetime" @set-datetime="setDatetime" />
+      <select-date
+        v-if="currentPage === 1"
+        :data="data"
+        :profile="profile"
+        @set-datetime="setDatetime"
+        @set-people="setPeople"
+      />
       <select-facility
         v-if="currentPage === 2"
         :facilities="facilities"
@@ -59,7 +65,12 @@ export default Vue.extend({
         datetime: new Date(
           new Date(new Date().setDate(new Date().getDate() + 1)).setHours(11, 0)
         ),
+        people: 2,
         selectedIds: []
+      },
+      profile: {
+        displayName: '',
+        pictureUrl: ''
       },
       loading: true,
       currentPage: 1
@@ -120,11 +131,20 @@ export default Vue.extend({
     setDatetime(datetime) {
       this.data.datetime = datetime
     },
+    setPeople(num) {
+      this.data.people = num
+    },
     setLINEData() {
       const context = liff.getContext()
       if (context && context.type !== 'none') {
         this.data.groupId = context.roomId ?? context.groupId ?? ''
       }
+      liff.getProfile().then(({ displayName, pictureUrl }) => {
+        this.profile = {
+          displayName,
+          pictureUrl
+        }
+      })
     }
   },
   props: {
