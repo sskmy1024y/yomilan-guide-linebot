@@ -71,8 +71,9 @@ class RouteHelper
     }
 
     $sum_time = 0;
+    ksort($facilities);
     foreach ($facilities as $key => $facility) {
-      if ($key === 0) {
+      if ($key == 0) {
         if ($start === null) continue;
         $time = $start->travelTime($facility->location());
       } else {
@@ -80,7 +81,7 @@ class RouteHelper
       }
       // 移動時間と、アトラクションの所要時間を追加
       $sum_time += $time;
-      $sum_time += $facility->require_time;
+      $sum_time += $facility->require_time ?? rand(10, 30);
 
       // TODO: 待ち時間を計算して付与。今は固定
       $sum_time += 5;

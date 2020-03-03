@@ -35,10 +35,8 @@ class Visit_Action
     Util_Assert::nonEmptyString($group_id);
 
     $visit = VisitHelper::insertIgnore($group_id, $datetime);
-    $route = RouteHelper::latest($visit->id);
-    if ($route === false) {
-      $route = RouteHelper::makeRoute($visit->id, $want_facilities_ids);
-    }
+    $route = RouteHelper::makeRoute($visit->id, $want_facilities_ids);
+
     return $route;
   }
 

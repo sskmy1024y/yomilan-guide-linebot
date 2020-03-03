@@ -3,6 +3,7 @@
 namespace App\Services\LINEBot;
 
 use App\Models\Visit;
+use Illuminate\Support\Facades\Log;
 use Util_Assert;
 
 class VisitHelper
@@ -37,6 +38,9 @@ class VisitHelper
         'group_id' => $group_id,
         'start' => $datetime,
       ]);
+    } else {
+      $visit->start = $datetime;
+      $visit->save();
     }
 
     return $visit;

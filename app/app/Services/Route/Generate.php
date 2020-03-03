@@ -36,7 +36,7 @@ class Route_Generate
   public function __construct($start, $end = null, $location = null)
   {
     if ($end === null) {
-      $end = (clone $start)->setTime(18, 0, 0); // FIXME: setTimeは、APIから終園時間を取得したものを使用する
+      $end = (clone $start)->setTime(18, 0); // FIXME: setTimeは、APIから終園時間を取得したものを使用する
     }
     if ($location === null) {
       $location = Location::enterance();
@@ -100,22 +100,31 @@ class Route_Generate
     }
 
     // 遊べる時間を自動計算
-    $active_time = $usable_time - $lanch_time; // 8時間 * 60分 - 60分 お昼時間を除く
+    $active_time = $usable_time - $lanch_time;
+    Log::info("開始時間: " . $this->start_time->Hi());
 
     $reaming = 0;
     do {
       $ids = array_column($this->facilities, "id");
-      // エリアごとの施設を取得して、候補一覧とマージ 
-      $_facilities = array_merge(self::_getFacilitiesEveryArea($ids), $this->facilities);
-      // 施設同士の近さで並び替える
-      $_facilities = self::_sortByDistanceFromFacilities($_facilities);
+      // エリアごとの施設を取得
+      $pickup_list = self::_getAttractionsEveryArea($ids);
+      // 施設リストと周回時間を取得
+      list($_facilities, $orbit_time) = self::newFacilitiesAndOrbitTimeHelper($pickup_list);
 
-      // 施設を回るのにかかる時間を計算
-      // $orbit_time = self::_getOrbitTime($_facilities);
-      $orbit_time = RouteHelper::orbitTime($_facilities, $this->location);
-
-      // 直前の時間と同じならこれ以上施設がない = 検索終了
-      if ($orbit_time == $reaming || $orbit_time > $active_time) {
+      if ($orbit_time > $active_time && count($pickup_list) > 1) {
+        // 時間超過していても、pickupが複数あれば1つずつ挿入してみる
+        foreach ($pickup_list as $pickup) {
+          list($_facilities, $orbit_time) = self::newFacilitiesAndOrbitTimeHelper(array($pickup));
+          if ($orbit_time > $active_time) {
+            break;
+          } else {
+            $this->facilities = $_facilities;
+          }
+          // どちらにせよ時間超過している = 検索終了
+          break;
+        }
+      } else if ($orbit_time == $reaming || $orbit_time > $active_time) {
+        // 直前の時間と同じならこれ以上施設がない = 検索終了
         break;
       }
 
@@ -124,8 +133,11 @@ class Route_Generate
       $reaming = $orbit_time;
     } while ($reaming < $active_time);
 
+
+    Log::info("終了時間: " . (clone $this->start_time)->addMinutes($reaming)->Hi());
+
     if ($lanch_time > 0) {
-      $lanch = Facility::where("type", "=", FacilityType::RESTAURANT)->first();
+      $lanch = Facility::where("type", "=", FacilityType::RESTAURANT)->inRandomOrder()->first();
       $this->facilities = self::_mergeLanchFacility($lanch);
     }
 
@@ -136,26 +148,51 @@ class Route_Generate
   }
 
   /**
-   * エリア毎に施設をピックアップする
+   * 追加したいFacility配列を渡して、新しい候補一覧を生成・周回時間を返すHelper関数
+   * 
+   * 使用箇所が複数あったので関数に切り分けた
+   * 
+   * @param Facility[] $_facilities 追加候補のFacility
+   * @return array `['list' => Facility[], 'orbit' => int]` 新しい候補リストと周回時間
+   */
+  private function newFacilitiesAndOrbitTimeHelper(array $_facilities): array
+  {
+    //候補一覧とマージして施設同士の近さで並び替える
+    $facilities = self::_sortByDistanceFromFacilities(
+      array_merge($_facilities, $this->facilities)
+    );
+    // 施設を回るのにかかる時間を計算
+    $orbit_time = RouteHelper::orbitTime($facilities, $this->location);
+
+    return array(
+      $facilities,
+      $orbit_time,
+    );
+  }
+
+  /**
+   * エリア毎にアトラクションをピックアップする
    * 
    * @param int[] $exclude_ids 除外する施設のID
    * @return Facility[]
    */
-  private function _getFacilitiesEveryArea(array $exclude_ids = []): array
+  private function _getAttractionsEveryArea(array $exclude_ids = []): array
   {
     $areas = Area::all();
 
     $facilities = [];
     foreach ($areas as $area) {
-      $area_facilities = $area->facilies()->whereNotIn("id", $exclude_ids);  // 同じアトラクションを排除
+      $area_facilities = $area->facilies()
+        ->where('type', '=', FacilityType::ATTRACTION)
+        ->where('enable', '=', true)
+        ->whereNotIn('id', $exclude_ids);  // 同じアトラクションを排除
 
       // TODO: 取得条件をユーザによって変える（子連れ、年代等）
       // $area_facilities = $area_facilities->where("for_child", "=", 0);
 
-      $facility = $area_facilities->first();
+      $facility = $area_facilities->inRandomOrder()->first();
 
-      // nullや飲食施設を除外する
-      if ($facility !== null && $facility->isValidAttraction()) {
+      if ($facility !== null) {
         $facilities[] = $facility;
       }
     }
@@ -211,8 +248,19 @@ class Route_Generate
    */
   private function _mergeLanchFacility($lanch)
   {
-    $lanch_start = (clone $this->start_time)->setTime(11, 30);
-    $lanch_end = (clone $this->start_time)->setTime(13, 30);
+    ksort($this->facilities);
+    if ($this->start_time->hour <= 11 && $this->start_time->minute <= 30) {
+      $lanch_start = (clone $this->start_time)->setTime(11, 30);
+    } else {
+      $lanch_start = (clone $this->start_time);
+    }
+    do {
+      $lanch_end = (clone $this->start_time)->setTime(rand(12, 13), rand(0, 59));
+      if ($lanch_end->diffInMinutes($lanch_start, false) < 0) {
+        continue;
+      }
+    } while ($lanch_end->hour != 12 && !($lanch_end->hour == 13 && $lanch_end->minute <= 30));
+
     $_facilities = [];
     /**
      * 1. 飲食店の近くのアトラクションを探す
@@ -230,13 +278,16 @@ class Route_Generate
       $key = array_search($next->id, array_column($this->facilities, 'id'));
       if ($key === false) {
         throw new \Exception_AssertionFailed('該当する施設が見つかりませんでした', $next);
+      } else if ($key == 0) {
+        $_facilities = array_merge(array($lanch), $this->facilities);
+        break;
       }
 
       $splited = array_chunk($this->facilities, $key);
       $comp_time = $start_time->addMinutes(RouteHelper::orbitTime($splited[0], $this->location));
 
       if ($comp_time->gte($lanch_start) && $comp_time->lte($lanch_end)) {
-        $_facilities = array_merge($splited[0], [$lanch], $splited[1]);
+        $_facilities = array_merge($splited[0], array($lanch), $splited[1]);
         break;
       } else if ($comp_time->lte($lanch_end)) {   // 11:30以前
         $next = $this->facilities[$key + 1];

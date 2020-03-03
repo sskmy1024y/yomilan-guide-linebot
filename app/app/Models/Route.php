@@ -23,6 +23,6 @@ class Route extends Model
 
     public function facilities()
     {
-        return $this->belongsToMany('App\Models\Facility', 'route_facility', 'route_id', 'facility_id')->withPivot('index');
+        return $this->belongsToMany('App\Models\Facility', 'route_facility', 'route_id', 'facility_id')->withPivot('index')->orderBy('index', 'asc');
     }
 }
