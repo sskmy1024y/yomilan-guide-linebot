@@ -3,6 +3,7 @@
 namespace App\Services\LINEBot;
 
 use App\Models\Facility;
+use App\Models\Location;
 use App\Models\Route;
 use App\Models\Visit;
 use App\Services\Route\Route_Generate;
@@ -61,7 +62,7 @@ class RouteHelper
    * 
    * @param Facility[] $facilities 周回する施設リスト
    * @param Location|null $start 出発点のLocation。nullの場合、facility[0]を起点にする。
-   * @param int 移動時間(min)
+   * @return int 移動時間(min)
    */
   public static function orbitTime(array $facilities, $start = null)
   {
@@ -75,21 +76,38 @@ class RouteHelper
     foreach ($facilities as $key => $facility) {
       if ($key == 0) {
         if ($start === null) continue;
-        $time = $start->travelTime($facility->location());
+        list($move_time, $play_time) = RouteHelper::travelAndOrbit($facility, $start);
       } else {
-        $time = $facilities[$key - 1]->location()->travelTime($facility->location());
+        list($move_time, $play_time) = RouteHelper::travelAndOrbit($facility, $facilities[$key - 1]->location());
       }
       // 移動時間と、アトラクションの所要時間を追加
-      $sum_time += $time;
-      $sum_time += $facility->require_time ?? rand(10, 30);
-
-      // TODO: 待ち時間を計算して付与。今は固定
-      $sum_time += 5;
-      // Padding Time
-      $sum_time += 5;
+      $sum_time += $move_time + $play_time;
     }
 
-    return (int) $sum_time;
+    return $sum_time;
+  }
+
+  /** 
+   * 施設までの移動時間及び到着から終了までにかかる時間を計算して返す
+   * 
+   * @param Facility $facility ターゲットの施設
+   * @param Location|null $departure 出発点のLocation。nullの場合、facility[0]を起点にする。
+   * @return int[]  [ 移動時間(min), 到着から終了までの時間(min) ]
+   */
+  public static function travelAndOrbit($facility, $departure = null)
+  {
+    if ($departure === null) {
+      $departure = Location::enterance();
+    }
+    $move_time = $departure->travelTime($facility->location());
+    $play_time = $facility->require_time ?? 15;
+
+    // TODO: 待ち時間を計算して付与。今は固定
+    $play_time += 5;
+    // Padding Time
+    $play_time += 5;
+
+    return array(round($move_time), round($play_time));
   }
 
   /**

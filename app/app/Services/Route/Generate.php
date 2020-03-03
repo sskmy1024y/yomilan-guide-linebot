@@ -94,7 +94,8 @@ class Route_Generate
     $usable_time = $this->start_time->diffInMinutes($this->end_time);
 
     if ($this->start_time->hour < 13) {
-      $lanch_time = 60;
+      $lanch = Facility::where("type", "=", FacilityType::RESTAURANT)->inRandomOrder()->first();
+      $lanch_time = $lanch->require_time + 20;  // 移動 + 待ち時間を20にしてみる
     } else {
       $lanch_time = 0;
     }
@@ -110,6 +111,9 @@ class Route_Generate
       $pickup_list = self::_getAttractionsEveryArea($ids);
       // 施設リストと周回時間を取得
       list($_facilities, $orbit_time) = self::newFacilitiesAndOrbitTimeHelper($pickup_list);
+
+      Log::info("アトラクション数: " . count($_facilities));
+      Log::info("ここまでの周回完了時間: " . (clone $this->start_time)->addMinutes($orbit_time)->Hi());
 
       if ($orbit_time > $active_time && count($pickup_list) > 1) {
         // 時間超過していても、pickupが複数あれば1つずつ挿入してみる
@@ -133,13 +137,12 @@ class Route_Generate
       $reaming = $orbit_time;
     } while ($reaming < $active_time);
 
-
-    Log::info("終了時間: " . (clone $this->start_time)->addMinutes($reaming)->Hi());
-
     if ($lanch_time > 0) {
-      $lanch = Facility::where("type", "=", FacilityType::RESTAURANT)->inRandomOrder()->first();
       $this->facilities = self::_mergeLanchFacility($lanch);
     }
+
+    Log::info("終了時間: " . (clone $this->start_time)->addMinutes($reaming + $lanch_time)->Hi());
+    Log::info("アトラクション数: " . count($this->facilities));
 
     return [
       'use_time' => $reaming,
@@ -278,16 +281,17 @@ class Route_Generate
       $key = array_search($next->id, array_column($this->facilities, 'id'));
       if ($key === false) {
         throw new \Exception_AssertionFailed('該当する施設が見つかりませんでした', $next);
-      } else if ($key == 0) {
+      } else if ($key <= 0) {
         $_facilities = array_merge(array($lanch), $this->facilities);
         break;
       }
 
-      $splited = array_chunk($this->facilities, $key);
-      $comp_time = $start_time->addMinutes(RouteHelper::orbitTime($splited[0], $this->location));
+      $first_helf = array_slice($this->facilities, 0, $key);
+      $letter_helf = array_slice($this->facilities, $key);
+      $comp_time = $start_time->addMinutes(RouteHelper::orbitTime($first_helf, $this->location));
 
       if ($comp_time->gte($lanch_start) && $comp_time->lte($lanch_end)) {
-        $_facilities = array_merge($splited[0], array($lanch), $splited[1]);
+        $_facilities = array_merge($first_helf, array($lanch), $letter_helf);
         break;
       } else if ($comp_time->lte($lanch_end)) {   // 11:30以前
         $next = $this->facilities[$key + 1];
