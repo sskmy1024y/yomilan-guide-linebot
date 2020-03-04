@@ -18,6 +18,7 @@ Route::group(['middleware' => ['api']], function () {
     Route::group(['namespace' => 'Api\Internal', 'prefix' => 'internal'], function () {
         Route::resource('facility', 'FacilitiesController', ['except' => ['create', 'edit']]);
         Route::resource('route', 'RouteController');
+        Route::post('watson', 'WatsonController@store');
     });
 
     Route::group(['namespace' => 'Api', 'prefix' => 'linebot'], function () {
