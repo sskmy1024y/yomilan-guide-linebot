@@ -4,6 +4,7 @@ namespace App\Services\Watson;
 
 use Util_Assert;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 use TalkType;
 
 /**
@@ -65,7 +66,8 @@ class Watson_Assistant
    */
   public function topIntents()
   {
-    $intent = $this->intents()[0]['intent'];
+    Log::info($this->getAll());
+    $intent = current($this->intents())['intent'] ?? false;
     if ($intent === false) {
       return null;
     }

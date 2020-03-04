@@ -31,6 +31,12 @@ class Route_Action
     return RouteHelper::latest($visit->id);
   }
 
+  /**
+   * LINEイベントを元にメッセージを返す
+   * 
+   * @param $event LINEイベント
+   * @return MessageBuilder
+   */
   public static function showCurrentRouteFromEvent($event)
   {
     $group_id = GroupHelper::identifyFromEvent($event)->group_id;

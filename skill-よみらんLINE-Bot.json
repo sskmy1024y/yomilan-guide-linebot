@@ -1,0 +1,567 @@
+{
+  "intents": [
+    {
+      "intent": "コース再生成",
+      "examples": [
+        {
+          "text": "コースをもう一度作って"
+        },
+        {
+          "text": "コースなおせ"
+        },
+        {
+          "text": "コースをアップデートして"
+        },
+        {
+          "text": "コースつくりなおせ"
+        },
+        {
+          "text": "コース再生成して"
+        },
+        {
+          "text": "コースせいせいして"
+        },
+        {
+          "text": "コース作り直して"
+        },
+        {
+          "text": "コース生成して"
+        },
+        {
+          "text": "コース更新して"
+        },
+        {
+          "text": "コースつくれ"
+        }
+      ],
+      "description": "コースを再生成する"
+    },
+    {
+      "intent": "ヘルプ関連",
+      "examples": [
+        {
+          "text": "ヘルプ"
+        },
+        {
+          "text": "何やってくれるの"
+        },
+        {
+          "text": "使い方がわからない"
+        },
+        {
+          "text": "使い方を教えて"
+        }
+      ],
+      "description": "使い方関連"
+    },
+    {
+      "intent": "飲食店関連",
+      "examples": [
+        {
+          "text": "クレープ食べたい"
+        },
+        {
+          "text": "あいすたべたい"
+        },
+        {
+          "text": "おどかわいた"
+        },
+        {
+          "text": "喉乾いた"
+        },
+        {
+          "text": "やすみたい"
+        },
+        {
+          "text": "疲れた"
+        },
+        {
+          "text": "つかれた"
+        },
+        {
+          "text": "休みたい"
+        },
+        {
+          "text": "休憩したい"
+        },
+        {
+          "text": "おやつたべたい"
+        },
+        {
+          "text": "おなかへった"
+        },
+        {
+          "text": "小腹がすいた"
+        },
+        {
+          "text": "何か食べたい"
+        },
+        {
+          "text": "アイス食べたい"
+        },
+        {
+          "text": "ご飯食べたい"
+        },
+        {
+          "text": "お腹すいた"
+        },
+        {
+          "text": "お腹空いた"
+        },
+        {
+          "text": "くうふくだ"
+        },
+        {
+          "text": "空腹だ"
+        },
+        {
+          "text": "なんか食べたい"
+        },
+        {
+          "text": "めしくいたい"
+        },
+        {
+          "text": "おなかすいた"
+        },
+        {
+          "text": "めしたべたい"
+        },
+        {
+          "text": "おやつ食べたい"
+        },
+        {
+          "text": "食いたい"
+        },
+        {
+          "text": "くいたい"
+        },
+        {
+          "text": "はらへった"
+        },
+        {
+          "text": "飲食店教えて"
+        }
+      ],
+      "description": "飲食店の誘導"
+    },
+    {
+      "intent": "プランニング関連",
+      "examples": [
+        {
+          "text": "よみらんいきたい"
+        },
+        {
+          "text": "コース作りたい"
+        },
+        {
+          "text": "コースを生成して"
+        },
+        {
+          "text": "コースを作って"
+        },
+        {
+          "text": "読売ランドどう"
+        },
+        {
+          "text": "楽しいことしたい"
+        },
+        {
+          "text": "遊園地行きたい"
+        },
+        {
+          "text": "遊びたい"
+        },
+        {
+          "text": "暇だ"
+        },
+        {
+          "text": "よみうりランドを教えて"
+        },
+        {
+          "text": "よみうりランドについて教えて"
+        },
+        {
+          "text": "よみうりランド行きたい"
+        },
+        {
+          "text": "よみらん行く"
+        },
+        {
+          "text": "遊びに行きたい"
+        },
+        {
+          "text": "よみうりランドいきたい"
+        }
+      ],
+      "description": "プランの提案"
+    },
+    {
+      "intent": "コース再表示",
+      "examples": [
+        {
+          "text": "案内して"
+        },
+        {
+          "text": "コースを表示して"
+        },
+        {
+          "text": "あんないして"
+        },
+        {
+          "text": "コースだして"
+        },
+        {
+          "text": "コースが見たい"
+        },
+        {
+          "text": "コース見せて"
+        },
+        {
+          "text": "コースみたい"
+        },
+        {
+          "text": "コース教えて"
+        },
+        {
+          "text": "コースおしえて"
+        },
+        {
+          "text": "コース出して"
+        },
+        {
+          "text": "コースみせて"
+        }
+      ],
+      "description": "生成したコースを表示"
+    },
+    {
+      "intent": "イベント関連",
+      "examples": [
+        {
+          "text": "何かイベントあるの"
+        },
+        {
+          "text": "イベントを観たい"
+        },
+        {
+          "text": "今日のイベント教えて"
+        },
+        {
+          "text": "イベントが知りたい"
+        },
+        {
+          "text": "イベントは"
+        },
+        {
+          "text": "イベントについて教えて"
+        },
+        {
+          "text": "開催中のイベントは"
+        },
+        {
+          "text": "イベントが見たい"
+        },
+        {
+          "text": "イベントに参加したい"
+        },
+        {
+          "text": "イベントをみたい"
+        }
+      ],
+      "description": "イベントの表示"
+    }
+  ],
+  "entities": [
+    {
+      "entity": "コース",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "コース",
+          "synonyms": [
+            "course",
+            "ルート",
+            "道順",
+            "こーす",
+            "るーと",
+            "route",
+            "案内",
+            "ガイド",
+            "あんない",
+            "がいど",
+            "アンナイ",
+            "ミチジュン",
+            "みちじゅん",
+            "経路",
+            "ケイロ",
+            "けいろ",
+            "guide"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "よみうりランド",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "よみうりランド",
+          "synonyms": [
+            "読みラン",
+            "よみらん",
+            "よみラン",
+            "読売ランド",
+            "よみうりらんど",
+            "yomiuri land",
+            "よみうりランド",
+            "yomiland",
+            "遊園地",
+            "ゆうえんち",
+            "よみゆりランド",
+            "読み百合ランド"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "イベント",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "イベント",
+          "synonyms": [
+            "いべんと",
+            "見世物",
+            "みせもの",
+            "ショー",
+            "しょー",
+            "ショウ",
+            "show",
+            "event",
+            "催し物",
+            "催し",
+            "もよおし",
+            "ワークショップ",
+            "わーくしょっぷ",
+            "workshop",
+            "イルミネーション",
+            "illumination",
+            "いるみねーしょん"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    }
+  ],
+  "metadata": {
+    "api_version": {
+      "major_version": "v2",
+      "minor_version": "2018-11-08"
+    }
+  },
+  "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "飲食店関連",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "こちらはいかがでしょう"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#飲食店関連",
+      "dialog_node": "node_1_1581840273023",
+      "previous_sibling": "node_6_1581840216315"
+    },
+    {
+      "type": "standard",
+      "title": "その他",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "解釈できませんでした。申し訳ありませんが違う表現を試していただけますか。"
+              },
+              {
+                "text": "恐れ入りますが表現を変えていただけますか。解釈できませんでした。"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "anything_else",
+      "dialog_node": "その他",
+      "previous_sibling": "node_4_1583340035760",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "standard",
+      "title": "コースの再生成",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "生成し直しました"
+              },
+              {
+                "text": "作り直しました"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "random"
+          }
+        ]
+      },
+      "conditions": "#コース再生成",
+      "dialog_node": "node_6_1581840216315",
+      "previous_sibling": "node_4_1581839755556"
+    },
+    {
+      "type": "standard",
+      "title": "コース再表示",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "こちらです"
+              },
+              {
+                "text": "コースはこちらです"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "random"
+          }
+        ]
+      },
+      "conditions": "#コース再表示",
+      "digress_in": "does_not_return",
+      "dialog_node": "node_4_1581839755556",
+      "previous_sibling": "node_8_1581840160336"
+    },
+    {
+      "type": "standard",
+      "title": "イベント関連",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "<? @イベント.literal ?>はこちらです"
+              },
+              {
+                "text": "本日の<? @イベント.literal ?>です"
+              },
+              {
+                "text": "開催中の<? @イベント.literal ?>はこのようになっています"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "random"
+          }
+        ]
+      },
+      "conditions": "#イベント関連",
+      "dialog_node": "node_4_1581840015017",
+      "previous_sibling": "ようこそ"
+    },
+    {
+      "type": "standard",
+      "title": "ヘルプ関連",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "使い方はこちらです"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#ヘルプ関連",
+      "digress_in": "does_not_return",
+      "dialog_node": "node_4_1583340035760",
+      "previous_sibling": "node_1_1581840273023"
+    },
+    {
+      "type": "standard",
+      "title": "プランニング関連",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "ぜひ行きましょう"
+              },
+              {
+                "text": "お待ちしております"
+              },
+              {
+                "text": "楽しい休日を過ごしましょう"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "random"
+          }
+        ]
+      },
+      "conditions": "#プランニング関連",
+      "dialog_node": "node_8_1581840160336",
+      "previous_sibling": "node_4_1581840015017"
+    },
+    {
+      "type": "standard",
+      "title": "ようこそ",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "こんにちは。ご用件を入力してください。"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "welcome",
+      "dialog_node": "ようこそ"
+    }
+  ],
+  "counterexamples": [],
+  "system_settings": {
+    "disambiguation": {
+      "prompt": "もしかして",
+      "enabled": true,
+      "randomize": true,
+      "max_suggestions": 5,
+      "suggestion_text_policy": "title",
+      "none_of_the_above_prompt": "上記のいずれにも該当し"
+    },
+    "human_agent_assist": {
+      "prompt": "もしかして"
+    }
+  },
+  "learning_opt_out": false,
+  "name": "よみらんLINE Bot",
+  "language": "ja",
+  "description": "よみうりランドのLINE Botの会話"
+}

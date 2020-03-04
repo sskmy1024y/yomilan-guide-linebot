@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Watson\Assistant_Helper;
 use App\Services\Watson\Watson_Assistant;
+use Illuminate\Support\Facades\Log;
 use Util_Assert;
 
 class WatsonController extends Controller

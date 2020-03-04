@@ -7,6 +7,7 @@ class TalkType
   const COURSE_REVIEW = 'コース再表示';
   const PLANING = 'プランニング関連';
   const RESTAURANT = '飲食店関連';
+  const HELP = 'ヘルプ関連';
 
   /**
    * 会話内容の型(TalkType)をintentを元に返す
@@ -26,6 +27,8 @@ class TalkType
         return TalkType::PLANING;
       case '飲食店関連':
         return TalkType::RESTAURANT;
+      case 'ヘルプ関連':
+        return TalkType::HELP;
       default:
         return null;
     }
