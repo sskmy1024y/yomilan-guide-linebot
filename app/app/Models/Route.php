@@ -16,8 +16,13 @@ class Route extends Model
         return $this->visit->group_id;
     }
 
+    public function want_facilities()
+    {
+        return $this->belongsToMany('App\Models\Facility', 'want_facility', 'route_id', 'facility_id')->withTimestamps();
+    }
+
     public function facilities()
     {
-        return $this->belongsToMany('App\Models\Facility', 'route_facility', 'route_id', 'facility_id')->withPivot('index');
+        return $this->belongsToMany('App\Models\Facility', 'route_facility', 'route_id', 'facility_id')->withPivot('index')->orderBy('index', 'asc');
     }
 }

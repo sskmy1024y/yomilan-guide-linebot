@@ -229,6 +229,18 @@ final class Util_Assert
   }
 
   /**
+   * H:i:s 形式の文字列であるかどうか検証する
+   *
+   * @param string $subject 検査される変数
+   * @return string 検証に引っかからなかった場合、$subjectをそのまま返す
+   */
+  public static function hisString($subject)
+  {
+    Util_DateTime::assertDatetimeStringByFormat($subject, 'H:i:s');
+    return $subject;
+  }
+
+  /**
    * Y-m-d H:i:s 形式の文字列であるかどうか検証する
    *
    * Util_Assert::ymdStringのような第二引数は無い。

@@ -17,6 +17,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/liff', function () {
-    return view('pages/liff');
-});
+Route::get('/liff', 'LIFFController@index');

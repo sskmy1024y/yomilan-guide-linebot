@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="contents">
-  <liff-body :limit="5">
+  <liff-body :facilities="{{$facilities}}">
   </liff-body>
 </div>
 

@@ -17,6 +17,7 @@ class CreateRouteFacilityTable extends Migration
             $table->bigInteger('route_id')->unsigned();
             $table->bigInteger('facility_id')->unsigned();
             $table->integer('index');
+            $table->primary(['route_id', 'facility_id', 'index']);
             $table->timestamps();
         });
     }

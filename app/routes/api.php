@@ -22,6 +22,8 @@ Route::group(['middleware' => ['api']], function () {
 
     Route::group(['namespace' => 'Api', 'prefix' => 'linebot'], function () {
         Route::post('callback', 'LinebotController@callback');
+
+        Route::post('postback', 'LinebotController@postback');
     });
 });
 

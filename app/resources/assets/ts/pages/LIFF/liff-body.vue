@@ -3,19 +3,23 @@
     <div class="main">
       <select-date
         v-if="currentPage === 1"
-        :datetime="datetime"
+        :data="data"
+        :profile="profile"
         @set-datetime="setDatetime"
+        @set-people="setPeople"
       />
       <select-facility
         v-if="currentPage === 2"
         :facilities="facilities"
-        :selectedIds="selectedIds"
+        :selectedIds="data.selectedIds"
         @select="select"
       />
     </div>
+    {{ data.groupId }}
     <footer-nav>
       <select-footer
         :showPrev="currentPage > 1"
+        :showNext="data.groupId !== ''"
         :done="currentPage === 2"
         @prev="onPrevPage"
         @next="onNextPage"
@@ -24,11 +28,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import SelectDate from '../select-date/select-date.vue'
 import SelectFooter from '../select-facility/select-footer.vue'
 import SelectFacility from '../select-facility/select-facility.vue'
 import FooterNav from '../../components/views/footer-nav/footer-nav.vue'
+import { formatDate } from '../../utils/datetime'
+import LIFF from 'liff-type'
 
 const facility = {
   name: 'バンデット',
@@ -50,17 +57,24 @@ const facility = {
   url: 'http://www.yomiuriland.com/attraction/bandit.html'
 }
 
-export default {
+export default Vue.extend({
   name: 'liff-body',
   data() {
     return {
+      data: {
+        groupId: '', // 個人ではなくgroupID or roomID
+        datetime: new Date(
+          new Date(new Date().setDate(new Date().getDate() + 1)).setHours(11, 0)
+        ),
+        people: 2,
+        selectedIds: []
+      },
+      profile: {
+        displayName: '',
+        pictureUrl: ''
+      },
       loading: true,
-      lineId: '', // 個人ではなくgroupID or roomID
-      currentPage: 1,
-      datetime: new Date(
-        new Date(new Date().setDate(new Date().getDate() + 1)).setHours(11, 0)
-      ),
-      selectedIds: []
+      currentPage: 1
     }
   },
   components: {
@@ -71,10 +85,10 @@ export default {
   },
   methods: {
     select(ids) {
-      this.selectedIds = ids
+      this.data.selectedIds = ids
     },
     selected(id) {
-      return this.selectedIds.includes(id)
+      return this.data.selectedIds.includes(id)
     },
     onPrevPage() {
       if (this.currentPage > 1) {
@@ -93,8 +107,22 @@ export default {
             customClass: 'small-confirm'
           }
         ).then(() => {
-          if (this.lineId !== '') {
-            liff.closeWindow()
+          if (this.data.groupId !== '') {
+            fetch(
+              `https://${location.hostname}:${location.port}/api/linebot/postback`,
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify({
+                  ...this.data,
+                  datetime: formatDate(this.data.datetime)
+                })
+              }
+            ).then(() => {
+              liff.closeWindow()
+            })
           }
         })
         return
@@ -102,29 +130,37 @@ export default {
       this.currentPage += 1
     },
     setDatetime(datetime) {
-      this.datetime = datetime
+      this.data.datetime = datetime
+    },
+    setPeople(num) {
+      this.data.people = num
     },
     setLINEData() {
       const context = liff.getContext()
       if (context && context.type !== 'none') {
-        this.lineId = context.roomId ?? context.groupId ?? ''
+        this.data.groupId = context.roomId ?? context.groupId ?? ''
       }
+      liff
+        .getProfile()
+        .then(({ displayName, pictureUrl }) => {
+          this.profile = {
+            displayName,
+            pictureUrl
+          }
+        })
+        .catch(e => {
+          this.profile.displayName = 'この端末からは登録できません'
+        })
     }
   },
   props: {
-    limit: Number
+    limit: Number,
+    facilities: {
+      type: Array,
+      required: true
+    }
   },
   computed: {
-    facilities() {
-      return [1, 2, 3, 4, 5, 6, 7].map(id => {
-        const selected = this.selected(id)
-        return {
-          ...facility,
-          id,
-          selected
-        }
-      })
-    },
     selectedList() {
       return this.facilities.filter(facility => this.selected(facility.id))
     }
@@ -149,7 +185,7 @@ export default {
       true
     )
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

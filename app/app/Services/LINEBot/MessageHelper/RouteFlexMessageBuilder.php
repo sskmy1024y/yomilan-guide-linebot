@@ -6,6 +6,7 @@ use App\Models\Route;
 use App\Models\FacilityType;
 use App\Models\Location;
 use App\Services\LINEBot\RouteHelper;
+use Illuminate\Support\Facades\Log;
 use LINE\LINEBot\Constant\Flex\ComponentFontSize;
 use LINE\LINEBot\Constant\Flex\ComponentFontWeight;
 use LINE\LINEBot\Constant\Flex\ComponentLayout;
@@ -88,21 +89,29 @@ class RouteFlexMessageBuilder extends FlexMessageBuilder
    */
   private function _routeBody()
   {
-    $facilities = $this->route->facilities;
+    $_facilities = $this->route->facilities;
 
     $placeComponent[] = TextComponentBuilder::builder()
       ->setText("入園予定時間: " . $this->start_time->Hi())
       ->setSize(ComponentFontSize::XS)
       ->setColor("#b7b7b7");
 
-    $timestamp = clone $this->start_time;
+    $facilities = [];
+    foreach ($_facilities as $_facility) {
+      $facilities[] = $_facility;
+    }
+    ksort($facilities);
+    $orbit_time = 0;
     foreach ($facilities as $key => $facility) {
       if ($key === 0) {
-        $dist = RouteHelper::orbitTime([$facility], Location::enterance());
+        list($move_time, $play_time) = RouteHelper::travelAndOrbit($facility, Location::enterance());
+        $orbit_time += $move_time;  // アトラクションまでの移動時間
       } else {
-        $dist = RouteHelper::orbitTime([$facilities[$key - 1], $facility]);
+        $orbit_time += $play_time;  // 直前のアトラクションの遊び時間
+        list($move_time, $play_time) = RouteHelper::travelAndOrbit($facility, $facilities[$key - 1]->location());
+        $orbit_time += $move_time;  // アトラクションまでの移動時間
       };
-      $placeComponent[] = self::_timeAndPlace($timestamp->addMinutes($dist)->Hi(), $facility);
+      $placeComponent[] = self::_timeAndPlace((clone $this->start_time)->addMinutes($orbit_time)->Hi(), $facility);
     }
 
     return BoxComponentBuilder::builder()
