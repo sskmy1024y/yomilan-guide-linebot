@@ -165,7 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
-        motuo\CallWatsonAPI\CallWatsonServiceProvider::class,
+        // motuo\CallWatsonAPI\CallWatsonServiceProvider::class,
 
         /*
          * Application Service Providers...
