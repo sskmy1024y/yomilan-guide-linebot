@@ -1,6 +1,5 @@
 const mix = require('laravel-mix')
 const WebpackBarPlugin = require('webpackbar')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 /*
  |--------------------------------------------------------------------------
@@ -27,7 +26,8 @@ mix.webpackConfig({
   context: path.resolve(__dirname),
   plugins: [barPlugin],
   output: {
-    chunkFilename: mix.inProduction() ? `[name].js` : '[name].dev.js'
+    chunkFilename: mix.inProduction() ? `[name].js` : '[name].dev.js',
+    publicPath: mix.inProduction() ? '/yomilanbot/' : '/'
   },
   watchOptions: {
     poll: 1000,
