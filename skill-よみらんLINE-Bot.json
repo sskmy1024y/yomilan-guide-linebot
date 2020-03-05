@@ -4,34 +4,34 @@
       "intent": "コース再生成",
       "examples": [
         {
-          "text": "コースをもう一度作って"
-        },
-        {
-          "text": "コースなおせ"
-        },
-        {
-          "text": "コースをアップデートして"
-        },
-        {
-          "text": "コースつくりなおせ"
-        },
-        {
-          "text": "コース再生成して"
-        },
-        {
-          "text": "コースせいせいして"
+          "text": "コース更新して"
         },
         {
           "text": "コース作り直して"
         },
         {
-          "text": "コース生成して"
+          "text": "コースせいせいして"
         },
         {
-          "text": "コース更新して"
+          "text": "コースをアップデートして"
+        },
+        {
+          "text": "コースなおせ"
         },
         {
           "text": "コースつくれ"
+        },
+        {
+          "text": "コース生成して"
+        },
+        {
+          "text": "コース再生成して"
+        },
+        {
+          "text": "コースをもう一度作って"
+        },
+        {
+          "text": "コースつくりなおせ"
         }
       ],
       "description": "コースを再生成する"
@@ -58,7 +58,58 @@
       "intent": "飲食店関連",
       "examples": [
         {
+          "text": "小腹がすいた"
+        },
+        {
+          "text": "空腹だ"
+        },
+        {
+          "text": "くうふくだ"
+        },
+        {
+          "text": "お腹空いた"
+        },
+        {
+          "text": "お腹すいた"
+        },
+        {
+          "text": "ご飯食べたい"
+        },
+        {
+          "text": "アイス食べたい"
+        },
+        {
+          "text": "飲食店教えて"
+        },
+        {
+          "text": "はらへった"
+        },
+        {
+          "text": "くいたい"
+        },
+        {
+          "text": "食いたい"
+        },
+        {
+          "text": "おやつ食べたい"
+        },
+        {
           "text": "クレープ食べたい"
+        },
+        {
+          "text": "何か食べたい"
+        },
+        {
+          "text": "めしたべたい"
+        },
+        {
+          "text": "おなかすいた"
+        },
+        {
+          "text": "めしくいたい"
+        },
+        {
+          "text": "なんか食べたい"
         },
         {
           "text": "あいすたべたい"
@@ -89,57 +140,6 @@
         },
         {
           "text": "おなかへった"
-        },
-        {
-          "text": "小腹がすいた"
-        },
-        {
-          "text": "何か食べたい"
-        },
-        {
-          "text": "アイス食べたい"
-        },
-        {
-          "text": "ご飯食べたい"
-        },
-        {
-          "text": "お腹すいた"
-        },
-        {
-          "text": "お腹空いた"
-        },
-        {
-          "text": "くうふくだ"
-        },
-        {
-          "text": "空腹だ"
-        },
-        {
-          "text": "なんか食べたい"
-        },
-        {
-          "text": "めしくいたい"
-        },
-        {
-          "text": "おなかすいた"
-        },
-        {
-          "text": "めしたべたい"
-        },
-        {
-          "text": "おやつ食べたい"
-        },
-        {
-          "text": "食いたい"
-        },
-        {
-          "text": "くいたい"
-        },
-        {
-          "text": "はらへった"
-        },
-        {
-          "text": "飲食店教えて"
         }
       ],
       "description": "飲食店の誘導"
@@ -149,15 +149,6 @@
       "examples": [
         {
           "text": "よみらんいきたい"
-        },
-        {
-          "text": "コース作りたい"
-        },
-        {
-          "text": "コースを生成して"
-        },
-        {
-          "text": "コースを作って"
         },
         {
           "text": "読売ランドどう"
@@ -191,6 +182,15 @@
         },
         {
           "text": "よみうりランドいきたい"
+        },
+        {
+          "text": "コース作りたい"
+        },
+        {
+          "text": "コースを生成して"
+        },
+        {
+          "text": "コースを作って"
         }
       ],
       "description": "プランの提案"
@@ -199,16 +199,7 @@
       "intent": "コース再表示",
       "examples": [
         {
-          "text": "案内して"
-        },
-        {
           "text": "コースを表示して"
-        },
-        {
-          "text": "あんないして"
-        },
-        {
-          "text": "コースだして"
         },
         {
           "text": "コースが見たい"
@@ -229,16 +220,67 @@
           "text": "コース出して"
         },
         {
+          "text": "コースだして"
+        },
+        {
           "text": "コースみせて"
+        },
+        {
+          "text": "案内して"
+        },
+        {
+          "text": "あんないして"
         }
       ],
       "description": "生成したコースを表示"
+    },
+    {
+      "intent": "あいさつ関連",
+      "examples": [
+        {
+          "text": "こんばんは"
+        },
+        {
+          "text": "バイバイ"
+        },
+        {
+          "text": "またね"
+        },
+        {
+          "text": "ねえねえ"
+        },
+        {
+          "text": "こんにちは"
+        },
+        {
+          "text": "おはよう"
+        }
+      ],
+      "description": "基本会話やあいさつ"
     },
     {
       "intent": "イベント関連",
       "examples": [
         {
           "text": "何かイベントあるの"
+        },
+        {
+          "text": "イベントに参加したい"
+        },
+        {
+          "text": "イベントが見たい"
+        },
+        {
+          "text": "開催中のイベントは"
+        },
+        {
+          "text": "イベントについて教えて"
+        },
+        {
+          "text": "イベントは"
+        },
+        {
+          "text": "イベントをみたい"
         },
         {
           "text": "イベントを観たい"
@@ -248,24 +290,6 @@
         },
         {
           "text": "イベントが知りたい"
-        },
-        {
-          "text": "イベントは"
-        },
-        {
-          "text": "イベントについて教えて"
-        },
-        {
-          "text": "開催中のイベントは"
-        },
-        {
-          "text": "イベントが見たい"
-        },
-        {
-          "text": "イベントに参加したい"
-        },
-        {
-          "text": "イベントをみたい"
         }
       ],
       "description": "イベントの表示"
@@ -363,6 +387,78 @@
   },
   "dialog_nodes": [
     {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "おはよう！"
+              },
+              {
+                "text": "おはようございます"
+              },
+              {
+                "text": "Good Morning!"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "random"
+          }
+        ]
+      },
+      "parent": "ようこそ",
+      "conditions": "new Date().getHours() + 9 > 5",
+      "dialog_node": "response_3_1583417006562",
+      "previous_sibling": "response_1_1583417128630"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "text": {
+          "values": [
+            "こんにちは",
+            "こんにちは！"
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "parent": "ようこそ",
+      "conditions": "new Date().getHours() + 9 > 9",
+      "dialog_node": "response_1_1583417128630",
+      "previous_sibling": "response_5_1583417182970"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "text": {
+          "values": [
+            "夜遅くまでご苦労様",
+            "おやすみなさい"
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "parent": "ようこそ",
+      "conditions": "new Date().getHours() + 9 > 0",
+      "dialog_node": "response_7_1583417027129",
+      "previous_sibling": "response_3_1583417006562"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "text": {
+          "values": [
+            "こんばんは"
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "parent": "ようこそ",
+      "conditions": "new Date().getHours() + 9 >17",
+      "dialog_node": "response_5_1583417182970"
+    },
+    {
       "type": "standard",
       "title": "飲食店関連",
       "output": {
@@ -390,10 +486,10 @@
           {
             "values": [
               {
-                "text": "解釈できませんでした。申し訳ありませんが違う表現を試していただけますか。"
+                "text": "勉強不足ですみません"
               },
               {
-                "text": "恐れ入りますが表現を変えていただけますか。解釈できませんでした。"
+                "text": "ちょっとよくわかりませんでした"
               }
             ],
             "response_type": "text",
@@ -528,21 +624,13 @@
     },
     {
       "type": "standard",
-      "title": "ようこそ",
-      "output": {
-        "generic": [
-          {
-            "values": [
-              {
-                "text": "こんにちは。ご用件を入力してください。"
-              }
-            ],
-            "response_type": "text",
-            "selection_policy": "sequential"
-          }
-        ]
+      "title": "基本挨拶",
+      "metadata": {
+        "_customization": {
+          "mcr": true
+        }
       },
-      "conditions": "welcome",
+      "conditions": "#あいさつ関連",
       "dialog_node": "ようこそ"
     }
   ],
