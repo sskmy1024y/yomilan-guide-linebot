@@ -3,7 +3,6 @@ import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/ja'
 import App from './app.vue'
 import LiffBody from './pages/LIFF/liff-body.vue'
-import 'element-ui/lib/theme-chalk/index.css'
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
