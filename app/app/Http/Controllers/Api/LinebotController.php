@@ -58,7 +58,7 @@ class LinebotController extends Controller
           $reply_token = $event->getReplyToken(); // 返信用トークン
 
           $service = new ServiceRouterAndDispatcher($event);
-          $reply = $service->textRouterAndDispatch($text);
+          $reply = $service->watsonRouterAndDispatch($text);
 
           if ($reply !== null) {
             $bot->replyMessage($reply_token, $reply);
@@ -66,6 +66,7 @@ class LinebotController extends Controller
         }
       }
     } catch (\Exception $e) {
+      Log::error($e);
     }
   }
 

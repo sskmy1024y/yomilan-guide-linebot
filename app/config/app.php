@@ -165,6 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
+        motuo\CallWatsonAPI\CallWatsonServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -227,5 +228,4 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
-
 ];
