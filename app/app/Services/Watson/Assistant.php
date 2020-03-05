@@ -47,7 +47,6 @@ class Watson_Assistant
   public function replyText()
   {
     Util_Assert::notEmpty($this->response);
-    Log::info($this->getAll());
     return current($this->response['output']['text']) ?? false;
   }
 
