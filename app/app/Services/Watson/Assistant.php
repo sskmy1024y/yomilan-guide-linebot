@@ -66,7 +66,6 @@ class Watson_Assistant
    */
   public function topIntents()
   {
-    Log::info($this->getAll());
     $intent = current($this->intents())['intent'] ?? false;
     if ($intent === false) {
       return null;

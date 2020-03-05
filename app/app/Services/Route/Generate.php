@@ -102,7 +102,7 @@ class Route_Generate
 
     // 遊べる時間を自動計算
     $active_time = $usable_time - $lanch_time;
-    Log::info("開始時間: " . $this->start_time->Hi());
+    // Log::info("開始時間: " . $this->start_time->Hi());
 
     $reaming = 0;
     do {
@@ -111,9 +111,6 @@ class Route_Generate
       $pickup_list = self::_getAttractionsEveryArea($ids);
       // 施設リストと周回時間を取得
       list($_facilities, $orbit_time) = self::newFacilitiesAndOrbitTimeHelper($pickup_list);
-
-      Log::info("アトラクション数: " . count($_facilities));
-      Log::info("ここまでの周回完了時間: " . (clone $this->start_time)->addMinutes($orbit_time)->Hi());
 
       if ($orbit_time > $active_time && count($pickup_list) > 1) {
         // 時間超過していても、pickupが複数あれば1つずつ挿入してみる
@@ -141,8 +138,8 @@ class Route_Generate
       $this->facilities = self::_mergeLanchFacility($lanch);
     }
 
-    Log::info("終了時間: " . (clone $this->start_time)->addMinutes($reaming + $lanch_time)->Hi());
-    Log::info("アトラクション数: " . count($this->facilities));
+    // Log::info("終了時間: " . (clone $this->start_time)->addMinutes($reaming + $lanch_time)->Hi());
+    // Log::info("アトラクション数: " . count($this->facilities));
 
     return [
       'use_time' => $reaming,

@@ -10,6 +10,9 @@ use App\Services\LINEBot\Actions\Visit_Action;
 use App\Services\LINEBot\MessageHelper\RouteFlexMessageBuilder;
 use App\Services\Watson\Watson_Assistant;
 use Illuminate\Support\Facades\Log;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ButtonTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
+use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
 use TalkType;
 use Util_Assert;
 
@@ -77,10 +80,15 @@ class ServiceRouterAndDispatcher
       ],
       TalkType::PLANING => [
         'action' => function () {
-          return new TextMessageBuilder('line://app/1653895916-Q4beDgJp');
+          $watson_reply = 'よみうりランドに行ってみよう';
+          $uri_action = new UriTemplateActionBuilder('コースを作ってみる', 'line://app/1653895916-Q4beDgJp');
+          $img_url = secure_asset('assets/img/route_img.jpg');
+          $button = new ButtonTemplateBuilder($watson_reply, 'いつも以上によみうりランドを楽しめるコースが作れます', $img_url, [$uri_action]);
+          return new TemplateMessageBuilder($watson_reply, $button);
         },
       ],
       // TODO: イベント関連
+
       TalkType::HELP => [
         'action' => function () {
           return Help_Action::main();
