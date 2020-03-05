@@ -87,8 +87,18 @@ class ServiceRouterAndDispatcher
           return new TemplateMessageBuilder($watson_reply, $button);
         },
       ],
-      // TODO: イベント関連
-
+      TalkType::EVENT => [
+        'action' => function () {
+          // TODO: イベント関連
+          return new TextMessageBuilder('イベントは準備中です');
+        }
+      ],
+      TalkType::RESTAURANT => [
+        'action' => function () {
+          // TODO: 飲食店関連
+          return new TextMessageBuilder('飲食店情報は準備中です');
+        }
+      ],
       TalkType::HELP => [
         'action' => function () {
           return Help_Action::main();
@@ -98,13 +108,20 @@ class ServiceRouterAndDispatcher
 
     $watson_assistant = new Watson_Assistant($text);
     $talk_type = $watson_assistant->topIntents();
+    $replyText = $watson_assistant->replyText();
 
     if ($talk_type !== null && array_key_exists($talk_type, $route_map)) {
       Util_Assert::keyExists($route_map[$talk_type], 'action');
       return $route_map[$talk_type]['action']();
     }
 
-    return new TextMessageBuilder('別の言葉で言い直して');
+    if ($replyText === false) {
+      $replyText = 'わかりませんでした';
+    }
+
+    Log::info($replyText);
+
+    return new TextMessageBuilder($replyText);
   }
 
 

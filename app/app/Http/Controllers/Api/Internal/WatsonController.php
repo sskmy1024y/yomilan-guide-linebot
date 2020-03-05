@@ -43,7 +43,7 @@ class WatsonController extends Controller
     Util_Assert::nonEmptyString($text);
 
     $wa = new Watson_Assistant($text);
-    $reply = $wa->topIntents();
+    $reply = $wa->getAll();
 
     return response()->json(['error' => false, 'message' => '', 'data' => $reply]);
   }

@@ -12,6 +12,7 @@ class Help_Action
   public static function main()
   {
     $list = [
+      "【このBOTの使い方】\n",
       "「遊びに行きたい」\n→ よみうりランドのプランで遊ぶプランを作成します\n\n",
       "「コースを見たい」\n→ 作ったコースが見られます",
     ];
