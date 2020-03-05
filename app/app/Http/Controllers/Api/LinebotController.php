@@ -16,6 +16,7 @@ use LINE\LINEBot\Event\MessageEvent\TextMessage;
 use LINE\LINEBot\Constant\HTTPHeader;
 use LINE\LINEBot\Event\JoinEvent;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
+use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use Util_DateTime;
 
 class LinebotController extends Controller
@@ -57,8 +58,12 @@ class LinebotController extends Controller
           $text = $event->getText();              // LINEで送信されたテキスト
           $reply_token = $event->getReplyToken(); // 返信用トークン
 
-          $service = new ServiceRouterAndDispatcher($event);
-          $reply = $service->watsonRouterAndDispatch($text);
+          if ($event->isUserEvent()) {
+            $reply = new TextMessageBuilder("このBOTはグループ専用なんだ。\nグループに招待してね！");
+          } else {
+            $service = new ServiceRouterAndDispatcher($event);
+            $reply = $service->watsonRouterAndDispatch($text);
+          }
 
           if ($reply !== null) {
             $bot->replyMessage($reply_token, $reply);
