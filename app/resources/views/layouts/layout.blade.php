@@ -3,7 +3,7 @@
 
 <head>
   @include('includes.partials.page_meta')
-  <link rel="stylesheet" href="{{ mix('/assets/css/app.css') }}" type="text/css">
+  <link rel="stylesheet" href="{{ asset(mix('assets/css/app.css')) }}" type="text/css">
   <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
 </head>
 
@@ -12,13 +12,13 @@
     @yield('content')
   </div>
 
-  <script src="{{ mix('/assets/js/manifest.js') }}"></script>
+  <script src="{{ asset(mix('assets/js/manifest.js')) }}"></script>
   @if(config('app.env') === 'production')
-  <script src="{{ mix('/assets/js/vendor.js') }}"></script>
-  <script src="{{ mix('/assets/js/app.js') }}"></script>
+  <script src="{{ asset(mix('assets/js/vendor.js')) }}"></script>
+  <script src="{{ asset(mix('assets/js/app.js')) }}"></script>
   @else
-  <script src="{{ mix('/assets/js/vendor.dev.js') }}"></script>
-  <script src="{{ mix('/assets/js/app.dev.js') }}"></script>
+  <script src="{{ asset(mix('assets/js/vendor.dev.js')) }}"></script>
+  <script src="{{ asset(mix('assets/js/app.dev.js')) }}"></script>
   @endif
 
 </body>
