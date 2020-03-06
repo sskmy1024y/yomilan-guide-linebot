@@ -6,8 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
+    // プライマリーキーのカラム名
+    protected $primaryKey = 'group_id';
+
+    // プライマリーキーの型
+    protected $keyType = 'string';
+
+    // プライマリーキーは自動連番か？
+    public $incrementing = false;
+
     protected $fillable = [
         'group_id',
+        'has_child_precent',
         'type',
     ];
 

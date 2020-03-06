@@ -23,7 +23,9 @@ class Route_Action
   {
     Util_Assert::nonEmptyString($group_id);
 
-    $visit = VisitHelper::sameDayVisit($group_id, $date);
+    $group = GroupHelper::identify($group_id);
+
+    $visit = VisitHelper::afterDayVisit($group, $date);
     if ($visit === null) {
       return false;
     }

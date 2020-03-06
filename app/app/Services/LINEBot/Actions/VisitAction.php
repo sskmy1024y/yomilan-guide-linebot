@@ -34,7 +34,9 @@ class Visit_Action
   {
     Util_Assert::nonEmptyString($group_id);
 
-    $visit = VisitHelper::insertIgnore($group_id, $datetime);
+    $group = GroupHelper::identify($group_id);
+
+    $visit = VisitHelper::insertIgnore($group, $datetime);
     $route = RouteHelper::makeRoute($visit->id, $want_facilities_ids);
 
     return $route;

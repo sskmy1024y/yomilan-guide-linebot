@@ -49,7 +49,7 @@ class RouteFlexMessageBuilder extends FlexMessageBuilder
       ->setHeader(self::_headerComponent())
       ->setBody(self::_routeBody());
 
-    $altText = "よみらん";
+    $altText = "コースを作りました！";
     parent::__construct($altText,  $containerBuilder, $quickReply);
   }
 
