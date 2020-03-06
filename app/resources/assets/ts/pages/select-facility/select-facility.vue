@@ -43,7 +43,7 @@ export default Vue.extend({
           ? [...this.selectedIds, id]
           : this.selectedIds.filter(_id => _id !== id)
       )
-      if (scroll.scrollLeft < scroll.scrollWidth) {
+      if (scroll.scrollLeft < scroll.scrollWidth && select !== false) {
         scrollTo(
           document.getElementById('facility-carousel'),
           scroll.scrollLeft + scroll.scrollWidth / this.facilities.length - 8,
