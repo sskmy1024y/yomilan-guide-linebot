@@ -14,6 +14,7 @@ use LINE\LINEBot\SignatureValidator;
 use LINE\LINEBot\Event\MessageEvent;
 use LINE\LINEBot\Event\MessageEvent\TextMessage;
 use LINE\LINEBot\Constant\HTTPHeader;
+use LINE\LINEBot\Event\FollowEvent;
 use LINE\LINEBot\Event\JoinEvent;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
@@ -51,7 +52,11 @@ class LinebotController extends Controller
         }
 
         // ここからが分岐 ===================================
-        if ($event instanceof JoinEvent) {
+        if ($event instanceof FollowEvent) {
+          $reply_token = $event->getReplyToken();
+          $reply = new TextMessageBuilder("友達登録ありがとう！\nこのBOTはグループ専用なんだ。グループに招待してね！");
+          $bot->replyMessage($reply_token, $reply);
+        } else if ($event instanceof JoinEvent) {
           $reply_token = $event->getReplyToken();
           $bot->replyText($reply_token, "グループに追加してくれてありがとう！");
         } else if ($event instanceof MessageEvent && $event instanceof TextMessage) {   // テキストメッセージの場合
