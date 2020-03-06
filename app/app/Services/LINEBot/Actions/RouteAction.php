@@ -25,7 +25,7 @@ class Route_Action
 
     $group = GroupHelper::identify($group_id);
 
-    $visit = VisitHelper::sameDayVisit($group, $date);
+    $visit = VisitHelper::afterDayVisit($group, $date);
     if ($visit === null) {
       return false;
     }

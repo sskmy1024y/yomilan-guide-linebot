@@ -9,7 +9,7 @@ use Util_Assert;
 class VisitHelper
 {
   /**
-   * 指定した日付で発行されたVisitを取得する。
+   * 指定した日付のVisitを取得する。
    * visitが無ければnullが返る。
    * 
    * @param Group $group
@@ -18,7 +18,20 @@ class VisitHelper
    */
   public static function sameDayVisit($group, $date)
   {
-    return Visit::where('group_id', $group->id)->whereBetween('created_at', $date->DayBetween())->latest()->first();
+    return Visit::where('group_id', $group->idgroup_id)->whereBetween('start', $date->DayBetween())->latest()->first();
+  }
+
+  /**
+   * 指定した日付以降で直近のVisitを取得する。
+   * visitがなければnullを返す。
+   * 
+   * @param Group $group
+   * @param ExDateTimeImmutable $date
+   * @return Visit|null
+   */
+  public static function afterDayVisit($group, $date)
+  {
+    return Visit::where('group_id', $group->group_id)->whereDate('start', '>=', $date->Ymd())->first();
   }
 
   /**
