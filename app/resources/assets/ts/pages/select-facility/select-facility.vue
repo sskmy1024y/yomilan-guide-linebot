@@ -4,7 +4,7 @@
       <h1>おすすめアトラクション</h1>
       <div class="description">周りたいアトラクションを選ぶことで、コースを作るときに自動的に組み込まれるよ</div>
     </div>
-    <facilities-carousel :items="facilities" @set-select="select" />
+    <facilities-carousel :items="facilities" :selected-ids="selectedIds" @set-select="select" />
     <want-facility-list :items="selectedList" @set-select="select" />
   </div>
 </template>
@@ -13,6 +13,7 @@
 import Vue from 'vue'
 import FacilitiesCarousel from '../../components/views/card/facilities-carousel.vue'
 import WantFacilityList from '../../components/views/want-list/want-facility-list.vue'
+import { scrollTo } from '../../utils/scroll'
 
 export default Vue.extend({
   name: 'select-facility',
@@ -43,8 +44,11 @@ export default Vue.extend({
           : this.selectedIds.filter(_id => _id !== id)
       )
       if (scroll.scrollLeft < scroll.scrollWidth) {
-        document.getElementById('facility-carousel').scrollLeft +=
-          scroll.scrollWidth / this.facilities.length - 16
+        scrollTo(
+          document.getElementById('facility-carousel'),
+          scroll.scrollLeft + scroll.scrollWidth / this.facilities.length - 8,
+          300
+        )
       }
     },
     selected(id) {
