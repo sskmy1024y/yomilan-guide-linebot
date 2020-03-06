@@ -12,32 +12,31 @@ class VisitHelper
    * 指定した日付で発行されたVisitを取得する。
    * visitが無ければnullが返る。
    * 
-   * @param string $group_id
+   * @param Group $group
    * @param ExDateTimeImmutable $date
    * @return Visit|null
    */
-  public static function sameDayVisit($group_id, $date)
+  public static function sameDayVisit($group, $date)
   {
-    Util_Assert::nonEmptyString($group_id);
-    return Visit::where('group_id', $group_id)->whereBetween('created_at', $date->DayBetween())->latest()->first();
+    return Visit::where('group_id', $group->id)->whereBetween('created_at', $date->DayBetween())->latest()->first();
   }
 
   /**
    * 指定した日付のVisitを発行。
    * すでに発行済みであれば取得
    * 
-   * @param string $group_id
+   * @param Group $group
    * @param ExDateTimeImmutable $date
    * @return Visit
    */
-  public static function insertIgnore($group_id, $datetime)
+  public static function insertIgnore($group, $datetime)
   {
-    $visit = VisitHelper::sameDayVisit($group_id, $datetime);
+    $visit = VisitHelper::sameDayVisit($group, $datetime);
     if ($visit === null) {
-      $visit = Visit::create([
-        'group_id' => $group_id,
-        'start' => $datetime,
-      ]);
+      $visit = new Visit;
+      $visit->group()->associate($group);
+      $visit->start = $datetime;
+      $visit->save();
     } else {
       $visit->start = $datetime;
       $visit->save();

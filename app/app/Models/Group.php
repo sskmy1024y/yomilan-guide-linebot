@@ -8,6 +8,7 @@ class Group extends Model
 {
     protected $fillable = [
         'group_id',
+        'has_child_precent',
         'type',
     ];
 

@@ -42,6 +42,9 @@ class RouteHelper
       foreach ($route->want_facilities as $want_facility) {
         $gen->setFacility($want_facility);
       }
+
+      // TODO: 行きたいリストから子供を持つ割合を生成
+      Log::info($visit->group);
     }
 
     $gen_route = $gen->make();

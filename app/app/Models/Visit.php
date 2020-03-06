@@ -7,9 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Visit extends Model
 {
     protected $fillable = [
-        'group_id',
         'start',
     ];
+
+    /**
+     * グループ情報を取得
+     */
+    public function group()
+    {
+        return $this->belongsTo('App\Models\Group', 'group_id', 'group_id');
+    }
 
     /**
      * 生成したルートを取得
