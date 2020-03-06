@@ -43,8 +43,11 @@ class RouteHelper
         $gen->setFacility($want_facility);
       }
 
-      // TODO: 行きたいリストから子供を持つ割合を生成
-      Log::info($visit->group);
+      // 行きたいリストから子供を持つ割合を生成
+      if (count($want_facilities_ids) >= 3) {  // 一定数以上選択していない場合は考慮しない
+        $percentage = RouteHelper::calcHasChildPercentage($want_facilities_ids);
+        GroupHelper::saveHasChildProbability($visit->group, $percentage);
+      }
     }
 
     $gen_route = $gen->make();
@@ -124,5 +127,26 @@ class RouteHelper
     Util_Assert::positiveInt($visit_id);
     $route = Route::where('visit_id', $visit_id)->latest()->first();
     return $route === null ? false : $route;
+  }
+
+  /**
+   * 施設IDの配列から子供がいる割合を計算する
+   * 
+   * @param int[] $facility_ids
+   * @return float
+   */
+  public static function calcHasChildPercentage(array $facility_ids)
+  {
+    Util_Assert::intSequentialArray($facility_ids);
+    $want_facilities = Facility::whereIn('id', $facility_ids)->get();
+
+    $count = 0;
+    foreach ($want_facilities as $facility) {
+      Log::info($facility->for_child != false);
+      if ($facility->for_child) {
+        $count += 1;
+      }
+    }
+    return $count / count($facility_ids);
   }
 }

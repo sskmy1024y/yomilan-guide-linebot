@@ -43,4 +43,17 @@ class GroupHelper
     }
     return GroupHelper::identify($sourse_id);
   }
+
+  /**
+   * 子供がいる確率を登録する
+   * 
+   * @param Group $group
+   * @param float $probability
+   */
+  public static function saveHasChildProbability($group, $probability)
+  {
+    $old = $group->has_child_precent;
+    $group->has_child_precent = ($old + $probability) / 2;
+    $group->save();
+  }
 }
