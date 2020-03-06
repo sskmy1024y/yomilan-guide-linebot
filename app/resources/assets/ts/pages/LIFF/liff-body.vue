@@ -138,7 +138,7 @@ export default Vue.extend({
     setLINEData() {
       const context = liff.getContext()
       if (context && context.type !== 'none') {
-        this.data.groupId = context.roomId ?? context.groupId ?? ''
+        this.data.groupId = context.roomId ?? context.groupId ?? context.userId ?? ''
       }
       liff
         .getProfile()

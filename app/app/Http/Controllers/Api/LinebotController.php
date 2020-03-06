@@ -54,7 +54,7 @@ class LinebotController extends Controller
         // ここからが分岐 ===================================
         if ($event instanceof FollowEvent) {
           $reply_token = $event->getReplyToken();
-          $reply = new TextMessageBuilder("友達登録ありがとう！\nこのBOTはグループ専用なんだ。グループに招待してね！");
+          $reply = new TextMessageBuilder("友達登録ありがとう！使い方を知りたい時は「ヘルプ」って言ってね。\n\nこのBOTはグループでも使えるよ。ぜひグループにも招待してね！");
           $bot->replyMessage($reply_token, $reply);
         } else if ($event instanceof JoinEvent) {
           $reply_token = $event->getReplyToken();
@@ -63,12 +63,8 @@ class LinebotController extends Controller
           $text = $event->getText();              // LINEで送信されたテキスト
           $reply_token = $event->getReplyToken(); // 返信用トークン
 
-          if ($event->isUserEvent()) {
-            $reply = new TextMessageBuilder("このBOTはグループ専用なんだ。\nグループに招待してね！");
-          } else {
-            $service = new ServiceRouterAndDispatcher($event);
-            $reply = $service->watsonRouterAndDispatch($text);
-          }
+          $service = new ServiceRouterAndDispatcher($event);
+          $reply = $service->watsonRouterAndDispatch($text);
 
           if ($reply !== null) {
             $bot->replyMessage($reply_token, $reply);
