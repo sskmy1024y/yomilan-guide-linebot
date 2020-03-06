@@ -34,6 +34,8 @@ class RouteHelper
     $route->visit_id = $visit_id;
     $route->save();
 
+    $group = $visit->group;
+
     // 行きたいリストを登録
     if (count($want_facilities_ids) > 0) {
       $_want_facilities = Facility::whereIn('id', $want_facilities_ids)->get();
@@ -45,9 +47,14 @@ class RouteHelper
 
       // 行きたいリストから子供を持つ割合を生成
       if (count($want_facilities_ids) >= 3) {  // 一定数以上選択していない場合は考慮しない
-        $percentage = RouteHelper::calcHasChildPercentage($want_facilities_ids);
-        GroupHelper::saveHasChildProbability($visit->group, $percentage);
+        $percentage = self::_calcHasChildPercentage($want_facilities_ids);
+        GroupHelper::saveHasChildProbability($group, $percentage);
       }
+    }
+
+    $for_child_facilities = self::_getFacilitiesForChildByHasPercent($group->has_child_precent);
+    foreach ($for_child_facilities as $child_facility) {
+      $gen->setFacility($child_facility);
     }
 
     $gen_route = $gen->make();
@@ -135,18 +142,29 @@ class RouteHelper
    * @param int[] $facility_ids
    * @return float
    */
-  public static function calcHasChildPercentage(array $facility_ids)
+  private static function _calcHasChildPercentage(array $facility_ids)
   {
     Util_Assert::intSequentialArray($facility_ids);
     $want_facilities = Facility::whereIn('id', $facility_ids)->get();
 
     $count = 0;
     foreach ($want_facilities as $facility) {
-      Log::info($facility->for_child != false);
       if ($facility->for_child) {
         $count += 1;
       }
     }
     return $count / count($facility_ids);
+  }
+
+  /**
+   * 子供を持っている確率を基に、予め施設リストに子供向けアトラクションリストを取得する
+   * 
+   * @param float $percent
+   * @return Eloquent
+   */
+  private static function _getFacilitiesForChildByHasPercent($percent)
+  {
+    // TODO: 現状は(確率/10)個の施設を取得している
+    return Facility::where('for_child', true)->inRandomOrder()->limit(floor($percent))->get();
   }
 }
