@@ -25,6 +25,9 @@ class RouteFlexMessageBuilder extends FlexMessageBuilder
   /** @var Route */
   private $route;
 
+  /** @var int[] user want facility ids */
+  private $want_facility_ids;
+
   /** @var ExDateTimeImmutable */
   private $start_time;
 
@@ -38,6 +41,9 @@ class RouteFlexMessageBuilder extends FlexMessageBuilder
     $visit = $this->route->visit;
 
     $this->start_time = Util_DateTime::createFromYmdHis($visit->start);
+
+    $want_facilities = $this->route->want_facilities;
+    $this->want_facility_ids = array_column($want_facilities->toArray(), 'id') ?? [];
 
     $containerBuilder = BubbleContainerBuilder::builder()
       ->setHeader(self::_headerComponent())
@@ -131,7 +137,6 @@ class RouteFlexMessageBuilder extends FlexMessageBuilder
       ->setText($time)
       ->setSize(ComponentFontSize::SM);
 
-    $dot_color = "#DDDDDD";
     if ($facility->type == FacilityType::ATTRACTION) {
       $dot_color = "#6486E3";
     } else if ($facility->type == FacilityType::RESTAURANT) {
@@ -144,8 +149,13 @@ class RouteFlexMessageBuilder extends FlexMessageBuilder
       ->setBorderWidth("2px")
       ->setCornerRadius("30px")
       ->setLayout(ComponentLayout::VERTICAL)
-      ->setContents([FillerComponentBuilder::builder()])
-      ->setBorderColor($dot_color);
+      ->setContents([FillerComponentBuilder::builder()]);
+
+    if (in_array($facility->id, $this->want_facility_ids)) {
+      $dot->setBorderColor('#008000')->setBackgroundColor('#008000');
+    } else {
+      $dot->setBorderColor($dot_color);
+    }
 
     $dotComponent = BoxComponentBuilder::builder()
       ->setLayout(ComponentLayout::VERTICAL)

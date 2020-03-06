@@ -79,8 +79,8 @@ class ServiceRouterAndDispatcher
         },
       ],
       TalkType::PLANING => [
-        'action' => function () {
-          $watson_reply = 'よみうりランドに行ってみよう';
+        'action' => function (string $watson_reply) {
+          // $watson_reply = 'よみうりランドに行ってみよう';
           $uri_action = new UriTemplateActionBuilder('コースを作ってみる', 'line://app/1653895916-Q4beDgJp');
           $img_url = secure_asset('assets/img/route_img.jpg');
           $button = new ButtonTemplateBuilder($watson_reply, 'いつも以上によみうりランドを楽しめるコースが作れます', $img_url, [$uri_action]);
@@ -112,14 +112,12 @@ class ServiceRouterAndDispatcher
 
     if ($talk_type !== null && array_key_exists($talk_type, $route_map)) {
       Util_Assert::keyExists($route_map[$talk_type], 'action');
-      return $route_map[$talk_type]['action']();
+      return $route_map[$talk_type]['action']($replyText);
     }
 
     if ($replyText === false) {
       $replyText = 'わかりませんでした';
     }
-
-    Log::info($replyText);
 
     return new TextMessageBuilder($replyText);
   }
