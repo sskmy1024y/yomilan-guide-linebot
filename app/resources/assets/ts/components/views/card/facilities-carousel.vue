@@ -4,6 +4,7 @@
       v-for="(facility, index) in items"
       :key="index"
       :item="facility"
+      :selected-ids="selectedIds"
       @set-select="select"
     />
   </div>
@@ -20,6 +21,10 @@ export default Vue.extend({
   },
   props: {
     items: {
+      type: Array,
+      required: true
+    },
+    selectedIds: {
       type: Array,
       required: true
     }

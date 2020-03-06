@@ -42,6 +42,10 @@ export default Vue.extend({
     item: {
       type: Object,
       required: true
+    },
+    selectedIds: {
+      type: Array,
+      required: true
     }
   },
   computed: {
@@ -62,7 +66,7 @@ export default Vue.extend({
         this.$emit('set-select', this.item.id, value)
       },
       get() {
-        return this.item.selected
+        return this.selectedIds.includes(this.item.id)
       }
     }
   }
