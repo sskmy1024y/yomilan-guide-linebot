@@ -4,7 +4,6 @@ services:
     build: php
     volumes:
       - ./app:/var/www
-
   nginx:
     image: nginx:1.17-alpine
     depends_on:
@@ -18,7 +17,7 @@ services:
 
   db:
     image: mysql:5.7.22
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --explicit_defaults_for_timestamp
     volumes:
       - ./db/mysql_data:/var/lib/mysql
     env_file: .env

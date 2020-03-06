@@ -1,21 +1,23 @@
-# Dockerfile-Template-for-Laravel
+# yomiran-guide-linebot
 
-Docker上にLaravel環境を構築するテンプレート
+よみうりランド案内用LINE Bot
 
 ## Usage
 
 ```sh
-cp .env.template .env
+cp .env.example .env
+cp app/.env.example app/.env
 docker-compose build
+docker-compose run --rm app bash
+  COMPOSER_MEMORY_LIMIT=-1 composer install
+  exit
+docker-compose up -d
+docker-compose exec app bash
+  php artisan migrate:fresh --seed
 ```
 
-### Create new project
+## Q&A
 
-```sh
-rm ./app/.gitkeep
-docker-compose run --rm app composer create-project --prefer-dist laravel/laravel .
-```
+#### Q. `composer install`時に`killed`が出る
 
-#### TODO
-
-Make `docker-compose.production.yml`
+メモリ不足による強制終了らしい。これはdocker自体の割当メモリを増やすことで解決できた。

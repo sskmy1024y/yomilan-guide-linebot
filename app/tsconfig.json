@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "es6",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "target": "es6",
+    "lib": [
+      "es2018",
+      "es2017",
+      "es2016",
+      "dom"
+    ],
+    "types": [
+      "liff-type"
+    ],
+    "rootDir": "resources/assets/ts",
+  },
+  "include": [
+    "resources/assets/ts/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
