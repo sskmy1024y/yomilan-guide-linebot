@@ -110,12 +110,12 @@ class Route_Generate
       // エリアごとの施設を取得
       $pickup_list = self::_getAttractionsEveryArea($ids);
       // 施設リストと周回時間を取得
-      list($_facilities, $orbit_time) = self::newFacilitiesAndOrbitTimeHelper($pickup_list);
+      list($_facilities, $orbit_time) = self::_newFacilitiesAndOrbitTimeHelper(array_merge($pickup_list, $this->facilities));
 
       if ($orbit_time > $active_time && count($pickup_list) > 1) {
         // 時間超過していても、pickupが複数あれば1つずつ挿入してみる
         foreach ($pickup_list as $pickup) {
-          list($_facilities, $orbit_time) = self::newFacilitiesAndOrbitTimeHelper(array($pickup));
+          list($_facilities, $orbit_time) = self::_newFacilitiesAndOrbitTimeHelper(array_merge([$pickup], $this->facilities));
           if ($orbit_time > $active_time) {
             break;
           } else {
@@ -134,6 +134,14 @@ class Route_Generate
       $reaming = $orbit_time;
     } while ($reaming < $active_time);
 
+    // 閉園時間を過ぎていればreduceする
+    while ($reaming > $active_time) {
+      $reduce_list = array_slice($this->facilities, 0, -1);
+      list($_facilities, $orbit_time) = self::_newFacilitiesAndOrbitTimeHelper($reduce_list);
+      $this->facilities = $_facilities;
+      $reaming = $orbit_time;
+    }
+
     if ($lanch_time > 0) {
       $this->facilities = self::_mergeLanchFacility($lanch);
     }
@@ -148,19 +156,17 @@ class Route_Generate
   }
 
   /**
-   * 追加したいFacility配列を渡して、新しい候補一覧を生成・周回時間を返すHelper関数
+   * 新しいFacility配列を渡して、新しい候補一覧を生成・周回時間を返すHelper関数
    * 
    * 使用箇所が複数あったので関数に切り分けた
    * 
-   * @param Facility[] $_facilities 追加候補のFacility
+   * @param Facility[] $facility_list 追加候補のFacility
    * @return array `['list' => Facility[], 'orbit' => int]` 新しい候補リストと周回時間
    */
-  private function newFacilitiesAndOrbitTimeHelper(array $_facilities): array
+  private function _newFacilitiesAndOrbitTimeHelper(array $facility_list): array
   {
-    //候補一覧とマージして施設同士の近さで並び替える
-    $facilities = self::_sortByDistanceFromFacilities(
-      array_merge($_facilities, $this->facilities)
-    );
+    //候補一覧を施設同士の近さで並び替える
+    $facilities = self::_sortByDistanceFromFacilities($facility_list);
     // 施設を回るのにかかる時間を計算
     $orbit_time = RouteHelper::orbitTime($facilities, $this->location);
 
