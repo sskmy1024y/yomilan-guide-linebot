@@ -55,7 +55,7 @@ final class ExDateTimeImmutable extends Carbon\Carbon
     $start = (clone $this)->hour(0)->minute(0)->second(0);
     $end = (clone $this)->hour(24)->minute(59)->second(59);
 
-    return [$start->Ymd(), $end->Ymd()];
+    return [$start->Ymd_His(), $end->Ymd_His()];
   }
 
   // ========================== 非推奨メソッドたち ==========================

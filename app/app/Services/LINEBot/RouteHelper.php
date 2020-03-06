@@ -132,7 +132,7 @@ class RouteHelper
   public static function latest($visit_id)
   {
     Util_Assert::positiveInt($visit_id);
-    $route = Route::where('visit_id', $visit_id)->latest()->first();
+    $route = Route::where('visit_id', $visit_id)->orderBy('created_at', 'desc')->first();
     return $route === null ? false : $route;
   }
 

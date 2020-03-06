@@ -18,7 +18,7 @@ class VisitHelper
    */
   public static function sameDayVisit($group, $date)
   {
-    return Visit::where('group_id', $group->idgroup_id)->whereBetween('start', $date->DayBetween())->latest()->first();
+    return Visit::where('group_id', $group->group_id)->whereBetween('start', $date->DayBetween())->first();
   }
 
   /**
@@ -31,7 +31,7 @@ class VisitHelper
    */
   public static function afterDayVisit($group, $date)
   {
-    return Visit::where('group_id', $group->group_id)->whereDate('start', '>=', $date->Ymd())->first();
+    return Visit::where('group_id', $group->group_id)->whereDate('start', '>=', $date->Ymd())->orderBy('start')->first();
   }
 
   /**
