@@ -14,7 +14,7 @@
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^2.21.0",
         "@typescript-eslint/parser": "^2.21.0",
-        "axios": "^0.18",
+        "axios": "^0.21",
         "browser-sync": "^2.26.7",
         "browser-sync-webpack-plugin": "2.0.1",
         "cross-env": "^5.1",
